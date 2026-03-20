@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="肉肉机">
+<link rel="apple-touch-icon" href="https://you172865-cmyk.github.io/-/icon.jpg">
+<title>肉肉机</title>
+<style id="base-css">
+:root { --global-font-size:15px; --st:env(safe-area-inset-top,44px); --sb:env(safe-area-inset-bottom,0px); }
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+html,body{width:100%;height:100%;overflow:hidden;position:fixed;inset:0;}
+body{display:flex;justify-content:center;align-items:center;background:#000;}
+#phone-container{width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%);background-size:cover;background-position:center;position:relative;overflow:hidden;display:flex;flex-direction:column;font-size:var(--global-font-size);}
+#status-bar{display:none!important;}
+#top-widget{display:none!important;}
+#desktop-icons{flex:1;padding-top:calc(var(--st) + 10px);padding-left:20px;padding-right:20px;padding-bottom:10px;display:flex;flex-wrap:wrap;gap:20px;align-content:flex-start;}
+.app-icon-wrapper{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;}
+.app-icon{width:60px;height:60px;background:#07c160;border-radius:15px;display:flex;justify-content:center;align-items:center;font-size:35px;color:white;box-shadow:0 4px 10px rgba(0,0,0,0.15);background-size:cover;background-position:center;}
+.app-name{color:#fff;font-size:0.8em;font-weight:500;text-shadow:0 1px 4px rgba(0,0,0,0.7);transition:color 0.3s;}
+#phone-container.light-bg .app-name{color:#000!important;text-shadow:0 1px 3px rgba(255,255,255,0.9)!important;}
+#bottom-dock{margin:0 15px;margin-bottom:calc(var(--sb) + 12px);height:85px;background:rgba(255,255,255,0.3);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:30px;display:flex;justify-content:space-around;align-items:center;padding:0 15px;border:1px solid rgba(255,255,255,0.25);}
+.dock-icon{width:55px;height:55px;background:rgba(255,255,255,0.85);border-radius:12px;display:flex;justify-content:center;align-items:center;font-size:28px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.modal{position:fixed;inset:0;background:#f2f2f7;z-index:300;display:none;flex-direction:column;}
+.modal.active{display:flex;}
+.modal-header{padding-top:calc(var(--st) + 10px);padding-bottom:14px;padding-left:15px;padding-right:15px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.88);color:#fff;font-weight:bold;flex-shrink:0;}
+.modal-content{padding:20px;flex:1;overflow-y:auto;padding-bottom:calc(var(--sb) + 20px);}
+.modal-btn{color:#fff;cursor:pointer;font-weight:bold;border:none;background:none;font-size:1em;}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;margin-bottom:8px;color:#555;font-size:0.9em;font-weight:500;}
+.form-group input[type="text"],.form-group input[type="password"],.form-group textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:0.9em;outline:none;}
+.form-group textarea{height:80px;resize:none;}
+.upload-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px;}
+.upload-row input[type="text"]{flex:1;min-width:0;}
+.upload-btn{background:#000;color:white;padding:8px 14px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85em;white-space:nowrap;flex-shrink:0;}
+.upload-btn-local{background:rgba(255,255,255,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#000;border:1px solid rgba(0,0,0,0.15);padding:8px 14px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85em;white-space:nowrap;flex-shrink:0;}
+.preview-img{width:80px;height:80px;object-fit:cover;margin-top:10px;border-radius:12px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.save-all-btn{width:100%;padding:16px;background:#000;color:#fff;border:none;border-radius:14px;font-size:1em;font-weight:700;cursor:pointer;margin-top:24px;font-family:inherit;}
+.save-all-btn:active{opacity:0.7;}
+.fetch-model-btn{background:rgba(255,255,255,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#000;border:1px solid rgba(0,0,0,0.12);padding:7px 12px;border-radius:10px;font-size:0.82em;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.fetch-model-btn:active{opacity:0.7;}
+.model-row{display:flex;gap:8px;align-items:center;}
+.model-select{flex:1;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:0.9em;outline:none;background:#fff;}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding:5px 0;}
+.toggle-row label{margin-bottom:0;color:#333;font-size:1em;font-weight:500;}
+.switch{position:relative;display:inline-block;width:44px;height:24px;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.4s;border-radius:24px;}
+.slider:before{position:absolute;content:"";height:20px;width:20px;left:2px;bottom:2px;background-color:white;transition:.4s;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,0.2);}
+input:checked+.slider{background-color:#34C759;}
+input:checked+.slider:before{transform:translateX(20px);}
+input[type=range]{-webkit-appearance:none;width:100%;background:transparent;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:#000;cursor:pointer;margin-top:-8px;}
+input[type=range]::-webkit-slider-runnable-track{width:100%;height:4px;cursor:pointer;background:#ccc;border-radius:2px;}
+.app-page{position:fixed;inset:0;background:#ededed;display:none;flex-direction:column;z-index:100;}
+.app-page.active{display:flex;}
+#chat-interface,#chat-details-page,#profile-page{position:fixed;inset:0;background:#ededed;display:none;flex-direction:column;}
+#chat-interface.active,#chat-details-page.active,#profile-page.active{display:flex;}
+#chat-interface{z-index:200;}
+#chat-details-page{z-index:250;background:#fff;}
+#profile-page{z-index:260;background:#fff;}
+.wechat-header,.chat-header,.app-header{padding-top:calc(var(--st) + 6px);padding-bottom:12px;padding-left:15px;padding-right:15px;background:#ededed;border-bottom:1px solid #d1d1d1;position:relative;display:flex;align-items:flex-end;flex-shrink:0;}
+#chat-details-page .chat-header{background:#fff;border-bottom:1px solid #f0f0f0;}
+.wechat-title,.chat-title,.app-title{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-weight:500;font-size:1.1em;color:#000;}
+.wechat-back,.chat-back,.app-back{position:absolute;left:15px;bottom:8px;font-size:1.8em;cursor:pointer;color:#000;font-weight:300;z-index:10;}
+.chat-more{position:absolute;right:15px;bottom:14px;font-size:1.5em;letter-spacing:2px;cursor:pointer;color:#000;font-weight:bolder;z-index:10;line-height:1;}
+.wechat-body{flex:1;overflow-y:auto;padding:15px;}
+.app-body{flex:1;display:flex;justify-content:center;align-items:center;color:#888;font-size:1.2em;}
+.wechat-tab{display:none;flex-direction:column;gap:12px;}
+.wechat-tab.active{display:flex;}
+.contacts-top-panel{background:rgba(255,255,255,0.65);backdrop-filter:blur(10px);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.contacts-top-panel .list-item{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid rgba(0,0,0,0.03);}
+.contacts-top-panel .list-item:last-child{border-bottom:none;}
+.list-item{background:rgba(255,255,255,0.65);backdrop-filter:blur(5px);border-radius:12px;padding:12px 15px;display:flex;align-items:center;gap:15px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.03);}
+.list-item:active{background:rgba(220,220,220,0.8);}
+.avatar{width:48px;height:48px;border-radius:8px;display:flex;justify-content:center;align-items:center;color:white;font-size:1.5em;flex-shrink:0;overflow:hidden;}
+.avatar.circular{border-radius:50%;font-size:1.2em;}
+.avatar img{width:100%;height:100%;object-fit:cover;display:none;}
+.item-info{flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:center;}
+.item-name{font-size:1.05em;color:#000;font-weight:500;}
+.item-preview{font-size:0.85em;color:#888;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wechat-footer{padding-bottom:calc(var(--sb) + 8px);background:#f7f7f7;border-top:1px solid #d1d1d1;display:flex;justify-content:space-around;align-items:center;padding-top:8px;flex-shrink:0;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:0.7em;color:#888;cursor:pointer;flex:1;}
+.nav-item.active{color:#07c160;}
+.nav-icon{font-size:1.5em;}
+.chat-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:15px 15px 20px;}
+.msg-row{display:flex;width:100%;align-items:flex-start;gap:10px;}
+.msg-row.user{justify-content:flex-end;}
+.msg-row.ai{justify-content:flex-start;}
+.msg-avatar{width:38px;height:38px;border-radius:6px;flex-shrink:0;display:flex;justify-content:center;align-items:center;font-size:1em;overflow:hidden;font-weight:bold;background:#ddd;color:#555;}
+.msg-avatar.circular{border-radius:50%;}
+.msg-avatar img{width:100%;height:100%;object-fit:cover;}
+.bubble{max-width:65%;font-size:1em;padding:0.7em 1em;word-wrap:break-word;line-height:1.4;position:relative;}
+.msg-block{display:flex;flex-direction:column;width:100%;margin-bottom:4px;}
+.msg-time{font-size:0.7em;color:#999;margin-top:5px;padding:0 52px;}
+.msg-time-user{text-align:right;}
+.msg-time-ai{text-align:left;}
+#phone-container.hide-ts .msg-time{display:none !important;}
+.chat-footer{background:#f7f7f7;border-top:1px solid #e0e0e0;padding:10px 15px;padding-bottom:calc(var(--sb) + 12px);flex-shrink:0;}
+.chat-input-row{display:flex;gap:10px;align-items:center;}
+.chat-input-row input{flex:1;height:38px;border-radius:19px;border:1px solid rgba(0,0,0,0.1);padding:0 16px;font-size:1em;outline:none;background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);}
+.send-btn{width:32px;height:32px;background:#000;color:white;border:none;border-radius:8px;font-size:1em;cursor:pointer;flex-shrink:0;display:flex;justify-content:center;align-items:center;}
+.ai-reply-btn{width:32px;height:32px;background-color:#fff;border:1px solid #dcdcdc;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer;flex-shrink:0;}
+.details-body{flex:1;overflow-y:auto;padding:30px 20px;padding-bottom:calc(var(--sb) + 30px);display:flex;flex-direction:column;align-items:center;}
+.avatars-container{display:flex;gap:40px;margin-bottom:30px;justify-content:center;width:100%;}
+.avatar-edit-col{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.avatar-upload-label{width:75px;height:75px;border-radius:50%;overflow:hidden;background:#f5f5f5;display:flex;justify-content:center;align-items:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.08);position:relative;}
+.avatar-upload-label img{width:100%;height:100%;object-fit:cover;display:none;}
+.avatar-upload-label .fallback{font-size:2em;color:#555;}
+.details-display-name{font-size:0.9em;font-weight:500;color:#555;}
+.details-form{width:100%;}
+.details-form label{display:block;font-size:0.85em;color:#666;font-weight:500;margin-bottom:6px;padding-left:5px;}
+.details-form input,.details-form textarea{width:100%;background:rgba(0,0,0,0.04);border:none;border-radius:14px;padding:14px 16px;font-size:0.9em;color:#000;outline:none;margin-bottom:20px;}
+.details-form textarea{resize:none;line-height:1.5;}
+#clear-chat-btn{width:100%;padding:12px;background-color:#ff3b30;color:white;border:none;border-radius:14px;font-size:1em;font-weight:500;cursor:pointer;margin-top:10px;}
+.profile-header-float{position:absolute;top:0;left:0;width:100%;padding-top:calc(var(--st) + 4px);padding-left:15px;z-index:10;display:flex;align-items:center;}
+.profile-back{font-size:1.8em;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.6);cursor:pointer;}
+.profile-bg{height:320px;background:#999 url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop') center/cover;position:relative;cursor:pointer;}
+.profile-bg-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,0.7);font-size:0.85em;text-shadow:0 1px 2px rgba(0,0,0,0.5);pointer-events:none;}
+.profile-avatar-wrapper{position:absolute;bottom:-35px;left:50%;transform:translateX(-50%);width:85px;height:85px;border-radius:50%;border:3px solid #fff;background:#eee;overflow:hidden;display:flex;justify-content:center;align-items:center;font-size:2.2em;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.profile-avatar-wrapper img{width:100%;height:100%;object-fit:cover;display:none;}
+.profile-name{margin-top:50px;text-align:center;font-size:1.3em;font-weight:600;color:#000;}
+::-webkit-scrollbar{display:none;}
+</style>
+<style id="chat-custom-css"></style>
+<style id="custom-css"></style>
+</head>
+<body>
+<div id="phone-container">
+<div id="status-bar"></div>
+<div id="top-widget"></div>
+
+<div id="desktop-icons">
+    <div class="app-icon-wrapper" onclick="openApp('wechat-app')"><div class="app-icon" id="app-icon">💬</div><div class="app-name">微信</div></div>
+    <div class="app-icon-wrapper" onclick="openApp('worldbook-app')"><div class="app-icon" style="background:#a5673f;">📖</div><div class="app-name">世界书</div></div>
+    <div class="app-icon-wrapper" onclick="openApp('forum-app')"><div class="app-icon" style="background:#4a90e2;">📢</div><div class="app-name">论坛</div></div>
+    <div class="app-icon-wrapper" onclick="openApp('weibo-app')"><div class="app-icon" style="background:#e6162d;font-weight:bold;">浪</div><div class="app-name">微博</div></div>
+</div>
+
+<div id="bottom-dock">
+    <div class="dock-icon" onclick="openModal('modal-settings')">⚙️</div>
+    <div class="dock-icon" onclick="openModal('modal-beautify')">🎨</div>
+    <div class="dock-icon" onclick="openModal('modal-presets')">📝</div>
+</div>
+
+<!-- 设置 -->
+<div id="modal-settings" class="modal">
+    <div class="modal-header"><span class="modal-btn" onclick="closeModal('modal-settings')">取消</span><span>设置</span><span class="modal-btn" onclick="saveSettings()">保存</span></div>
+    <div class="modal-content">
+        <div class="form-group"><label>全局字体大小: <span id="font-size-val">15px</span></label><input type="range" id="set-font-size" min="12" max="24" value="15" oninput="updateFontSizeLabel()"></div>
+        <hr style="margin:10px 0 20px 0;border:0;border-top:1px solid #ccc;">
+        <div class="form-group"><label>Base URL</label><input type="text" id="set-baseurl"></div>
+        <div class="form-group"><label>API Key</label><input type="password" id="set-apikey"></div>
+        <div class="form-group">
+            <label>Model</label>
+            <div class="model-row">
+                <select class="model-select" id="set-model-select"><option value="gpt-4o">gpt-4o</option><option value="gpt-4o-mini">gpt-4o-mini</option><option value="gpt-3.5-turbo">gpt-3.5-turbo</option></select>
+                <button class="fetch-model-btn" onclick="fetchModels()">拉取模型</button>
+            </div>
+        </div>
+        <div class="form-group"><label>当前城市</label><input type="text" id="set-city"></div>
+        <div class="form-group"><label>当前天气</label><input type="text" id="set-weather"></div>
+    </div>
+</div>
+
+<!-- 美化 -->
+<div id="modal-beautify" class="modal">
+    <div class="modal-header"><span class="modal-btn" onclick="closeModal('modal-beautify')">取消</span><span>美化</span><span class="modal-btn" onclick="saveBeautify()">应用</span></div>
+    <div class="modal-content">
+        <div class="form-group">
+            <label>桌面壁纸</label>
+            <div class="upload-row">
+                <input type="text" id="set-wallpaper-url" placeholder="输入图片URL..." oninput="previewImage('wallpaper')">
+                <label class="upload-btn-local">📷 相册<input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(event,'wallpaper')"></label>
+            </div>
+            <img id="preview-wallpaper" class="preview-img">
+        </div>
+        <div class="form-group">
+            <label>软件图标（微信）</label>
+            <div class="upload-row">
+                <input type="text" id="set-icon-url" placeholder="输入图标URL..." oninput="previewImage('icon')">
+                <label class="upload-btn-local">📷 相册<input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(event,'icon')"></label>
+            </div>
+            <img id="preview-icon" class="preview-img">
+        </div>
+        <div class="form-group"><label>桌面自定义 CSS</label><textarea id="set-css"></textarea></div>
+        <button class="save-all-btn" onclick="saveBeautify()">💾 保存全部配置</button>
+    </div>
+</div>
+
+<!-- 预设 -->
+<div id="modal-presets" class="modal">
+    <div class="modal-header"><span class="modal-btn" onclick="closeModal('modal-presets')">取消</span><span>预设</span><span class="modal-btn" onclick="savePresets()">保存</span></div>
+    <div class="modal-content"><div class="form-group"><label>System Prompt</label><textarea id="set-prompt" style="height:250px;"></textarea></div></div>
+</div>
+
+<!-- 微信 -->
+<div id="wechat-app" class="app-page">
+    <div class="wechat-header"><div class="wechat-back" onclick="closeApp('wechat-app')">‹</div><div class="wechat-title">微信</div></div>
+    <div class="wechat-body">
+        <div id="tab-chats" class="wechat-tab active">
+            <div class="list-item" onclick="openChatWindow()">
+                <div class="avatar circular" style="background:#07c160;"><img id="list-avatar-preview" src=""><div id="list-avatar-fallback">🤖</div></div>
+                <div class="item-info"><div class="item-name" id="list-item-name">活人朋友</div><div class="item-preview" id="list-item-preview">✨ 点击继续聊天...</div></div><div id="list-item-time" style="font-size:0.75em;color:#aaa;white-space:nowrap;margin-left:8px;align-self:flex-start;padding-top:2px;"></div>
+            </div>
+        </div>
+        <div id="tab-contacts" class="wechat-tab">
+            <div class="contacts-top-panel">
+                <div class="list-item"><div class="avatar" style="background:#ff9500;font-size:1em;">新</div><div class="item-info"><div class="item-name">新的朋友</div></div></div>
+                <div class="list-item"><div class="avatar" style="background:#00c759;font-size:1em;">群</div><div class="item-info"><div class="item-name">群聊</div></div></div>
+            </div>
+            <div class="list-item" onclick="openProfile('小一','#fac03d','一')"><div class="avatar circular" style="background:#fac03d;">一</div><div class="item-info"><div class="item-name">小一</div></div></div>
+            <div class="list-item" onclick="openProfile('小二','#ff6b6b','二')"><div class="avatar circular" style="background:#ff6b6b;">二</div><div class="item-info"><div class="item-name">小二</div></div></div>
+            <div class="list-item" onclick="openProfile('小三','#54a0ff','三')"><div class="avatar circular" style="background:#54a0ff;">三</div><div class="item-info"><div class="item-name">小三</div></div></div>
+        </div>
+        <div id="tab-discover" class="wechat-tab"><div class="list-item"><div class="item-info"><div class="item-name">朋友圈</div></div></div></div>
+        <div id="tab-me" class="wechat-tab"><div class="list-item"><div class="item-info"><div class="item-name">设置</div></div></div></div>
+    </div>
+    <div class="wechat-footer">
+        <div class="nav-item active" onclick="switchTab('chats',this)"><span class="nav-icon">💬</span><span>微信</span></div>
+        <div class="nav-item" onclick="switchTab('contacts',this)"><span class="nav-icon">👤</span><span>通讯录</span></div>
+        <div class="nav-item" onclick="switchTab('discover',this)"><span class="nav-icon">🧭</span><span>发现</span></div>
+        <div class="nav-item" onclick="switchTab('me',this)"><span class="nav-icon">⚙️</span><span>我</span></div>
+    </div>
+</div>
+
+<div id="worldbook-app" class="app-page"><div class="app-header"><div class="app-back" onclick="closeApp('worldbook-app')">‹</div><div class="app-title">世界书</div></div><div class="app-body">世界书 施工中...</div></div>
+<div id="forum-app" class="app-page"><div class="app-header"><div class="app-back" onclick="closeApp('forum-app')">‹</div><div class="app-title">论坛</div></div><div class="app-body">论坛 施工中...</div></div>
+<div id="weibo-app" class="app-page"><div class="app-header"><div class="app-back" onclick="closeApp('weibo-app')">‹</div><div class="app-title">微博</div></div><div class="app-body">微博 施工中...</div></div>
+
+<!-- 聊天界面 -->
+<div id="chat-interface">
+    <div class="chat-header">
+        <div class="chat-back" onclick="closeChatWindow()">‹</div>
+        <div class="chat-title" id="chat-window-title">活人朋友</div>
+        <div class="chat-more" onclick="openChatDetails()">···</div>
+    </div>
+    <div class="chat-body" id="chat-body"></div>
+    <div class="chat-footer">
+        <div class="chat-input-row">
+            <button class="ai-reply-btn" id="generate-btn" onclick="generateAIResponse()"><svg viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+            <input type="text" id="chat-input" placeholder="发消息..." onkeypress="handleEnter(event)">
+            <button class="send-btn" onclick="addUserMessage()">↑</button>
+        </div>
+    </div>
+</div>
+
+<!-- 聊天详情 -->
+<div id="chat-details-page">
+    <div class="chat-header"><div class="chat-back" onclick="closeChatDetails()">‹</div><div class="chat-title">聊天详情</div></div>
+    <div class="details-body">
+        <div class="avatars-container">
+            <div class="avatar-edit-col"><label class="avatar-upload-label"><img id="details-avatar-preview" src=""><div class="fallback" id="details-avatar-fallback">🤖</div><input type="file" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event,'ai')"></label><div class="details-display-name">角色头像</div></div>
+            <div class="avatar-edit-col"><label class="avatar-upload-label"><img id="details-user-avatar-preview" src=""><div class="fallback" id="details-user-avatar-fallback">我</div><input type="file" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event,'user')"></label><div class="details-display-name">我的头像</div></div>
+        </div>
+        <div class="details-form">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:14px 16px;background:rgba(0,0,0,0.04);border-radius:14px;"><span style="font-size:0.9em;color:#333;font-weight:500;">显示时间戳</span><label class="switch"><input type="checkbox" id="set-show-timestamp" checked onchange="toggleTimestamp(this)"><span class="slider"></span></label></div><label>真实姓名</label><input type="text" id="set-ai-realname" placeholder="输入角色的真实姓名..." oninput="saveAiSettings()">
+            <label>备注名</label><input type="text" id="set-ai-remark" placeholder="输入列表展示的备注名..." oninput="saveAiSettings()">
+            <label>角色设定</label><textarea id="set-ai-persona" style="height:100px;" placeholder="例如：你是一个脾气有点暴躁的女孩..." oninput="saveAiSettings()"></textarea>
+            <label>聊天气泡美化 CSS</label><textarea id="set-chat-css" style="height:200px;font-family:monospace;font-size:11px;" oninput="saveAiSettings()"></textarea>
+            <button id="clear-chat-btn" onclick="clearChatHistory()">清空聊天记录</button>
+        </div>
+    </div>
+</div>
+
+<!-- 朋友圈名片 -->
+<div id="profile-page">
+    <div class="profile-header-float"><div class="profile-back" onclick="closeProfile()">‹</div></div>
+    <div class="profile-bg" id="profile-bg-display" onclick="document.getElementById('profile-bg-upload').click()">
+        <div class="profile-bg-hint">点击更换背景</div>
+        <input type="file" id="profile-bg-upload" accept="image/*" style="display:none;" onchange="handleProfileBgUpload(event)">
+        <div class="profile-avatar-wrapper" id="profile-avatar-bg"><img id="profile-avatar-img" src=""><div id="profile-avatar-fallback"></div></div>
+    </div>
+    <div class="profile-name" id="profile-name-display">名称</div>
+</div>
+</div>
+
+<script>
+const defaultPrompt=`你现在扮演我的一个真实人类朋友，我们正在用微信聊天。
+【严格规则】
+1. 绝对不能暴露你是AI。
+2. 回复必须口语化、随意。
+3. 如果你想表达一段话，请拆分为1到3条短消息返回。每条至多20个字。
+4. 多条短消息间用[BREAK]分隔。例如：干嘛呢[BREAK]刚吃完饭[BREAK]这事太逗了吧
+5. 【感知】当前时间：{TIME}，城市：{CITY}，天气：{WEATHER}。`;
+
+const defaultChatCss=`.msg-row.user .bubble{background-color:#000;color:#fff;border-radius:1.2em;border-bottom-right-radius:2px;margin-right:6px}.msg-row.user .bubble::before{content:"";position:absolute;bottom:0;right:-8px;width:16px;height:16px;background-color:#000;border-bottom-left-radius:16px;z-index:-2}.msg-row.user .bubble::after{content:"";position:absolute;bottom:0;right:-10px;width:10px;height:16px;background-color:#ededed;border-bottom-left-radius:10px;z-index:-1}.msg-row.ai .bubble{background-color:#fff;color:#000;border-radius:1.2em;border-bottom-left-radius:2px;margin-left:6px}.msg-row.ai .bubble::before{content:"";position:absolute;bottom:0;left:-8px;width:16px;height:16px;background-color:#fff;border-bottom-right-radius:16px;z-index:-2}.msg-row.ai .bubble::after{content:"";position:absolute;bottom:0;left:-10px;width:10px;height:16px;background-color:#ededed;border-bottom-right-radius:10px;z-index:-1}`;
+const loadingSvg=`<svg viewBox="0 0 24 24" width="16" height="16" stroke="#000" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10" stroke-dasharray="16 16"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle></svg>`;
+const heartSvg=`<svg viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+
+let chatHistory=JSON.parse(localStorage.getItem('chatHistory')||'[]');
+let renderedMessages=JSON.parse(localStorage.getItem('renderedMessages')||'[]');
+
+let config={
+    baseUrl:localStorage.getItem('baseUrl')||'https://api.openai.com/v1',
+    apiKey:localStorage.getItem('apiKey')||'',
+    model:localStorage.getItem('model')||'gpt-4o',
+    city:localStorage.getItem('city')||'上海',
+    weather:localStorage.getItem('weather')||'晴 25°C',
+    css:localStorage.getItem('css')||'',
+    prompt:localStorage.getItem('prompt')||defaultPrompt,
+    hideStatusBar:localStorage.getItem('hideStatusBar')==='true',
+    wallpaper:localStorage.getItem('wallpaper')||'',
+    appIcon:localStorage.getItem('appIcon')||'',
+    fontSize:localStorage.getItem('fontSize')||'15',
+    aiAvatar:localStorage.getItem('aiAvatar')||'',
+    userAvatar:localStorage.getItem('userAvatar')||'',
+    aiRealName:localStorage.getItem('aiRealName')||'',
+    aiRemark:localStorage.getItem('aiRemark')||'活人朋友',
+    aiPersona:localStorage.getItem('aiPersona')||'',
+    chatCss:localStorage.getItem('chatCss')||defaultChatCss,
+    profileBg:localStorage.getItem('profileBg')||''
+};
+
+function init(){
+    document.getElementById('set-baseurl').value=config.baseUrl;
+    document.getElementById('set-apikey').value=config.apiKey;
+    document.getElementById('set-city').value=config.city;
+    document.getElementById('set-weather').value=config.weather;
+    document.getElementById('set-css').value=config.css;
+    document.getElementById('set-prompt').value=config.prompt;
+    document.getElementById('set-font-size').value=config.fontSize;
+    updateFontSizeLabel();
+    const sel=document.getElementById('set-model-select');
+    const saved=config.model; let found=false;
+    for(let o of sel.options){if(o.value===saved){sel.value=saved;found=true;break;}}
+    if(!found){const o=document.createElement('option');o.value=saved;o.textContent=saved;sel.appendChild(o);sel.value=saved;}
+    if(config.wallpaper){document.getElementById('preview-wallpaper').src=config.wallpaper;document.getElementById('preview-wallpaper').style.display='block';}
+    if(config.appIcon){document.getElementById('preview-icon').src=config.appIcon;document.getElementById('preview-icon').style.display='block';}
+    applyImages();applyCustomCss();updateAiUi();
+    const savedTs=localStorage.getItem('showTimestamp');
+    const tsEl=document.getElementById('set-show-timestamp');
+    if(tsEl&&savedTs==='false'){tsEl.checked=false;document.getElementById('phone-container').classList.add('hide-ts');}
+    restoreChatMessages();
+    if(renderedMessages.length>0){
+        const last=renderedMessages[renderedMessages.length-1];
+        document.getElementById('list-item-preview').textContent=last.content.substring(0,20)+(last.content.length>20?'...':'');
+        if(last.time){const tEl=document.getElementById('list-item-time');if(tEl)tEl.textContent=last.time.substring(0,5);}
+    }
+}
+
+function restoreChatMessages(){
+    const cb=document.getElementById('chat-body');cb.innerHTML='';
+    renderedMessages.forEach(m=>renderMessage(m.content,m.role,false,m.time||''));
+}
+
+function saveChatToStorage(){
+    localStorage.setItem('chatHistory',JSON.stringify(chatHistory));
+    localStorage.setItem('renderedMessages',JSON.stringify(renderedMessages));
+    if(renderedMessages.length>0){
+        const last=renderedMessages[renderedMessages.length-1];
+        document.getElementById('list-item-preview').textContent=last.content.substring(0,20)+(last.content.length>20?'...':'');
+        if(last.time){const tEl=document.getElementById('list-item-time');if(tEl)tEl.textContent=last.time.substring(0,5);}
+    }
+}
+
+function updateFontSizeLabel(){
+    const val=document.getElementById('set-font-size').value;
+    document.getElementById('font-size-val').innerText=val+'px';
+    document.documentElement.style.setProperty('--global-font-size',val+'px');
+    config.fontSize=val;
+}
+
+function updateAiUi(){
+    document.getElementById('set-ai-realname').value=config.aiRealName;
+    document.getElementById('set-ai-remark').value=config.aiRemark;
+    document.getElementById('set-ai-persona').value=config.aiPersona;
+    document.getElementById('set-chat-css').value=config.chatCss;
+    document.getElementById('chat-custom-css').innerHTML=config.chatCss;
+    const dn=config.aiRemark||'未命名朋友';
+    document.getElementById('chat-window-title').innerText=dn;
+    document.getElementById('list-item-name').innerText=dn;
+    const dp=document.getElementById('details-avatar-preview'),df=document.getElementById('details-avatar-fallback');
+    const lp=document.getElementById('list-avatar-preview'),lf=document.getElementById('list-avatar-fallback');
+    if(config.aiAvatar){dp.src=config.aiAvatar;dp.style.display='block';df.style.display='none';lp.src=config.aiAvatar;lp.style.display='block';lf.style.display='none';}
+    else{dp.style.display='none';df.style.display='block';lp.style.display='none';lf.style.display='block';}
+    const dup=document.getElementById('details-user-avatar-preview'),duf=document.getElementById('details-user-avatar-fallback');
+    if(config.userAvatar){dup.src=config.userAvatar;dup.style.display='block';duf.style.display='none';}
+    else{dup.style.display='none';duf.style.display='block';}
+}
+
+function saveAiSettings(){
+    config.aiRealName=document.getElementById('set-ai-realname').value.trim();
+    config.aiRemark=document.getElementById('set-ai-remark').value.trim();
+    config.aiPersona=document.getElementById('set-ai-persona').value.trim();
+    config.chatCss=document.getElementById('set-chat-css').value;
+    localStorage.setItem('aiRealName',config.aiRealName);localStorage.setItem('aiRemark',config.aiRemark);
+    localStorage.setItem('aiPersona',config.aiPersona);localStorage.setItem('chatCss',config.chatCss);
+    updateAiUi();
+}
+
+function clearChatHistory(){
+    if(confirm('确定要清空所有聊天记录吗？')){
+        chatHistory=[];renderedMessages=[];
+        localStorage.removeItem('chatHistory');localStorage.removeItem('renderedMessages');
+        document.getElementById('chat-body').innerHTML='';
+        document.getElementById('list-item-preview').textContent='✨ 点击继续聊天...';
+    }
+}
+
+function handleAvatarUpload(event,type){
+    const file=event.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        const img=new Image();
+        img.onload=function(){
+            const canvas=document.createElement('canvas');
+            let w=img.width,h=img.height,MAX=400;
+            if(w>h&&w>MAX){h*=MAX/w;w=MAX;}else if(h>MAX){w*=MAX/h;h=MAX;}
+            canvas.width=w;canvas.height=h;
+            canvas.getContext('2d').drawImage(img,0,0,w,h);
+            const data=canvas.toDataURL('image/jpeg',0.8);
+            if(type==='ai'){config.aiAvatar=data;localStorage.setItem('aiAvatar',data);}
+            else{config.userAvatar=data;localStorage.setItem('userAvatar',data);}
+            updateAiUi();
+        };img.src=e.target.result;
+    };reader.readAsDataURL(file);
+}
+
+function handleImageUpload(event,type){
+    const file=event.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        const img=new Image();
+        img.onload=function(){
+            const canvas=document.createElement('canvas');
+            let w=img.width,h=img.height,MAX=1200;
+            if(w>h&&w>MAX){h*=MAX/w;w=MAX;}else if(h>MAX){w*=MAX/h;h=MAX;}
+            canvas.width=w;canvas.height=h;
+            canvas.getContext('2d').drawImage(img,0,0,w,h);
+            const data=canvas.toDataURL('image/jpeg',0.8);
+            if(type==='wallpaper'){config.wallpaper=data;document.getElementById('set-wallpaper-url').value='';document.getElementById('preview-wallpaper').src=data;document.getElementById('preview-wallpaper').style.display='block';}
+            else{config.appIcon=data;document.getElementById('set-icon-url').value='';document.getElementById('preview-icon').src=data;document.getElementById('preview-icon').style.display='block';}
+        };img.src=e.target.result;
+    };reader.readAsDataURL(file);
+}
+
+function previewImage(type){
+    if(type==='wallpaper'){const url=document.getElementById('set-wallpaper-url').value;config.wallpaper=url;const p=document.getElementById('preview-wallpaper');if(url){p.src=url;p.style.display='block';}else p.style.display='none';}
+    else{const url=document.getElementById('set-icon-url').value;config.appIcon=url;const p=document.getElementById('preview-icon');if(url){p.src=url;p.style.display='block';}else p.style.display='none';}
+}
+
+async function fetchModels(){
+    const base=document.getElementById('set-baseurl').value.trim();
+    const key=document.getElementById('set-apikey').value.trim();
+    if(!key){showToast('❌ 请先填写 API Key');return;}
+    if(!base){showToast('❌ 请先填写 Base URL');return;}
+    const btn=document.querySelector('.fetch-model-btn');btn.textContent='拉取中...';btn.disabled=true;
+    try{
+        const res=await fetch(base.replace(/\/$/,'')+'/models',{
+            method:'GET',
+            headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'}
+        });
+        if(!res.ok){
+            let errMsg='HTTP '+res.status;
+            try{const ed=await res.json();if(ed.error&&ed.error.message)errMsg=ed.error.message;}catch(e2){}
+            throw new Error(errMsg);
+        }
+        const data=await res.json();
+        if(!data.data||!data.data.length)throw new Error('返回数据为空');
+        const sel=document.getElementById('set-model-select');sel.innerHTML='';
+        data.data.sort((a,b)=>a.id.localeCompare(b.id)).forEach(m=>{const o=document.createElement('option');o.value=m.id;o.textContent=m.id;sel.appendChild(o);});
+        showToast('✅ 已拉取 '+data.data.length+' 个模型');
+        btn.textContent='已拉取✓';
+    }catch(e){
+        showToast('❌ 拉取失败：'+e.message);
+        btn.textContent='拉取模型';
+    }
+    btn.disabled=false;
+}
+
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function openApp(id){document.getElementById(id).classList.add('active');}
+function closeApp(id){document.getElementById(id).classList.remove('active');}
+function switchTab(tabName,element){
+    document.querySelectorAll('.wechat-tab').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+    document.getElementById('tab-'+tabName).classList.add('active');element.classList.add('active');
+}
+function openChatWindow(){document.getElementById('chat-interface').classList.add('active');}
+function closeChatWindow(){document.getElementById('chat-interface').classList.remove('active');}
+function openChatDetails(){document.getElementById('chat-details-page').classList.add('active');}
+function closeChatDetails(){document.getElementById('chat-details-page').classList.remove('active');}
+
+function openProfile(name,bgColor,shortStr){
+    document.getElementById('profile-name-display').innerText=name;
+    document.getElementById('profile-avatar-bg').style.background=bgColor;
+    document.getElementById('profile-avatar-img').style.display='none';
+    document.getElementById('profile-avatar-fallback').innerText=shortStr;
+    document.getElementById('profile-avatar-fallback').style.color='white';
+    document.getElementById('profile-avatar-fallback').style.display='block';
+    if(config.profileBg)document.getElementById('profile-bg-display').style.backgroundImage=`url('${config.profileBg}')`;
+    document.getElementById('profile-page').classList.add('active');
+}
+function closeProfile(){document.getElementById('profile-page').classList.remove('active');}
+
+function handleProfileBgUpload(event){
+    const file=event.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        const img=new Image();
+        img.onload=function(){
+            const canvas=document.createElement('canvas');
+            let w=img.width,h=img.height,MAX=1000;
+            if(w>h&&w>MAX){h*=MAX/w;w=MAX;}else if(h>MAX){w*=MAX/h;h=MAX;}
+            canvas.width=w;canvas.height=h;
+            canvas.getContext('2d').drawImage(img,0,0,w,h);
+            config.profileBg=canvas.toDataURL('image/jpeg',0.8);
+            localStorage.setItem('profileBg',config.profileBg);
+            document.getElementById('profile-bg-display').style.backgroundImage=`url('${config.profileBg}')`;
+        };img.src=e.target.result;
+    };reader.readAsDataURL(file);
+}
+
+// 壁纸深浅色自动检测
+function detectWallpaperBrightness(imgSrc, callback){
+    if(!imgSrc){callback('dark');return;}
+    // 纯渐变色直接分析
+    if(!imgSrc.startsWith('data:image')&&!imgSrc.startsWith('http')){callback('dark');return;}
+    const img=new Image();img.crossOrigin='Anonymous';
+    img.onload=function(){
+        const canvas=document.createElement('canvas');
+        canvas.width=50;canvas.height=50;
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,50,50);
+        const d=ctx.getImageData(0,0,50,50).data;
+        let brightness=0;
+        for(let i=0;i<d.length;i+=4){brightness+=(d[i]*299+d[i+1]*587+d[i+2]*114)/1000;}
+        brightness=brightness/(d.length/4);
+        callback(brightness>128?'light':'dark');
+    };
+    img.onerror=function(){callback('dark');};
+    img.src=imgSrc;
+}
+
+function applyWallpaperTextColor(type){
+    const pc=document.getElementById('phone-container');
+    if(type==='light'){pc.classList.add('light-bg');}
+    else{pc.classList.remove('light-bg');}
+}
+
+function applyImages(){
+    const pc=document.getElementById('phone-container');
+    if(config.wallpaper){
+        pc.style.backgroundImage=`url('${config.wallpaper}')`;
+        detectWallpaperBrightness(config.wallpaper,applyWallpaperTextColor);
+    } else {
+        pc.style.backgroundImage='none';
+        pc.style.background='linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)';
+        applyWallpaperTextColor('dark');
+    }
+    if(config.appIcon){document.getElementById('app-icon').style.backgroundImage=`url('${config.appIcon}')`;document.getElementById('app-icon').innerHTML='';}
+    else{document.getElementById('app-icon').innerHTML='💬';document.getElementById('app-icon').style.backgroundImage='none';}
+}
+
+function applyCustomCss(){document.getElementById('custom-css').innerHTML=config.css;}
+function handleEnter(e){if(e.key==='Enter')addUserMessage();}
+
+function getTimeStr(){
+    const n=new Date();
+    return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+}
+function renderMessage(content,role,save=true,timeStr=''){
+    const cb=document.getElementById('chat-body');
+    const ts=timeStr||(save?getTimeStr():'');
+    // 时间放在整个 msg-row 下方，单独一行
+    const wrapper=document.createElement('div');
+    wrapper.className='msg-block';
+    const row=document.createElement('div');row.className='msg-row '+role;
+    if(role==='ai'){
+        const imgStr=config.aiAvatar?`<img src="${config.aiAvatar}">`:'🤖';
+        row.innerHTML=`<div class="msg-avatar circular">${imgStr}</div><div class="bubble">${content}</div>`;
+    }else{
+        const userStr=config.userAvatar?`<img src="${config.userAvatar}">`:'我';
+        row.innerHTML=`<div class="bubble">${content}</div><div class="msg-avatar circular" style="background:#222;color:white;font-size:0.9em;">${userStr}</div>`;
+    }
+    wrapper.appendChild(row);
+    if(ts){
+        const tDiv=document.createElement('div');
+        tDiv.className='msg-time msg-time-'+role;
+        tDiv.textContent=ts;
+        wrapper.appendChild(tDiv);
+    }
+    cb.appendChild(wrapper);cb.scrollTop=cb.scrollHeight;
+    if(save){renderedMessages.push({content,role,time:ts});saveChatToStorage();}
+}
+function toggleTimestamp(el){
+    const show=el.checked;
+    const pc=document.getElementById('phone-container');
+    if(show){pc.classList.remove('hide-ts');}else{pc.classList.add('hide-ts');}
+    localStorage.setItem('showTimestamp',show);
+}
+
+function addUserMessage(){
+    const input=document.getElementById('chat-input');
+    const text=input.value.trim();if(!text)return;
+    renderMessage(text,'user');chatHistory.push({role:'user',content:text});input.value='';
+}
+
+async function generateAIResponse(){
+    if(!config.apiKey){showToast('⚠️ 请设置API后继续聊天');return;}
+    if(chatHistory.length===0)return;
+    const btn=document.getElementById('generate-btn');btn.innerHTML=loadingSvg;btn.disabled=true;
+    const now=new Date();
+    const nowStr=`${now.getMonth()+1}月${now.getDate()}日 ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    let persona='';
+    if(config.aiRealName)persona+=`你的真实姓名是：${config.aiRealName}。\n`;
+    if(config.aiPersona)persona+=`你的性格与身份设定是：${config.aiPersona}。\n`;
+    if(persona)persona=`【角色核心设定】\n${persona}\n\n`;
+    const finalPrompt=persona+config.prompt.replace('{TIME}',nowStr).replace('{CITY}',config.city).replace('{WEATHER}',config.weather);
+    const messages=[{role:'system',content:finalPrompt},...chatHistory.slice(-10)];
+    try{
+        const res=await fetch(config.baseUrl.replace(/\/$/,'')+'/chat/completions',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','Authorization':'Bearer '+config.apiKey},
+            body:JSON.stringify({model:config.model,messages,temperature:0.7})
+        });
+        if(!res.ok)throw new Error('HTTP '+res.status);
+        const data=await res.json();
+        const reply=data.choices[0].message.content;
+        chatHistory.push({role:'assistant',content:reply});
+        const parts=reply.split('[BREAK]').map(s=>s.trim()).filter(s=>s);
+        for(let i=0;i<parts.length;i++){setTimeout(()=>renderMessage(parts[i],'ai'),i*1000);}
+        setTimeout(()=>saveChatToStorage(),parts.length*1000+100);
+    }catch(e){renderMessage('【系统提示】出错：'+e.message,'ai');}
+    finally{btn.innerHTML=heartSvg;btn.disabled=false;}
+}
+
+function saveSettings(){
+    config.baseUrl=document.getElementById('set-baseurl').value;
+    config.apiKey=document.getElementById('set-apikey').value;
+    config.model=document.getElementById('set-model-select').value;
+    config.city=document.getElementById('set-city').value;
+    config.weather=document.getElementById('set-weather').value;
+    config.fontSize=document.getElementById('set-font-size').value;
+    document.documentElement.style.setProperty('--global-font-size',config.fontSize+'px');
+    localStorage.setItem('baseUrl',config.baseUrl);localStorage.setItem('apiKey',config.apiKey);
+    localStorage.setItem('model',config.model);localStorage.setItem('city',config.city);
+    localStorage.setItem('weather',config.weather);localStorage.setItem('fontSize',config.fontSize);
+    closeModal('modal-settings');
+    showToast('设置已保存 ✓');
+}
+
+function saveBeautify(){
+    config.css=document.getElementById('set-css').value;
+    localStorage.setItem('css',config.css);
+    localStorage.setItem('wallpaper',config.wallpaper);
+    localStorage.setItem('appIcon',config.appIcon);
+    applyCustomCss();applyImages();closeModal('modal-beautify');
+    showToast('配置已保存 ✓');
+}
+
+function savePresets(){
+    config.prompt=document.getElementById('set-prompt').value;
+    localStorage.setItem('prompt',config.prompt);
+    closeModal('modal-presets');
+    showToast('预设已保存 ✓');
+}
+
+function showToast(msg){
+    let t=document.getElementById('_toast');
+    if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;z-index:9999;pointer-events:none;white-space:nowrap;transition:opacity 0.3s;backdrop-filter:blur(10px);';document.body.appendChild(t);}
+    t.textContent=msg;t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',2000);
+}
+
+init();
+</script>
+</body>
+</html>
