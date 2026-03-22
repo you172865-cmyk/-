@@ -176,7 +176,7 @@
     
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; margin-bottom: 8px; color: #333; font-size: 0.9em; font-weight: 600; }
-    .form-group input[type="text"], .form-group input[type="password"], .form-group textarea, .form-group select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); font-size: 0.95em; outline: none; background: rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); color: #000; box-sizing: border-box;}
+    .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="password"], .form-group textarea, .form-group select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); font-size: 0.95em; outline: none; background: rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); color: #000; box-sizing: border-box;}
     .form-group textarea { height: 80px; resize: none; }
     
     .ins-icon-editor { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 5px; justify-items: center; }
@@ -635,6 +635,15 @@
                 <label>角色设定 (核心Prompt)</label>
                 <textarea id="set-ai-persona" style="height: 100px;" placeholder="例如：你是一个脾气有点暴躁的女孩..."></textarea>
                 
+                <!-- 从这里粘贴新代码 -->
+                <div style="display: flex; gap: 15px; align-items: center; margin-top: 18px;">
+                    <label style="margin: 0; flex-shrink: 0;">回复条数:</label>
+                    <input type="number" id="set-min-replies" style="padding: 10px; text-align: center; width: 100%;" placeholder="最少">
+                    <span style="font-weight: bold;">-</span>
+                    <input type="number" id="set-max-replies" style="padding: 10px; text-align: center; width: 100%;" placeholder="最多">
+                </div>
+                <!-- 粘贴到这里结束 -->
+
                 <label>聊天气泡美化 (高级自定义 CSS)</label>
                 <textarea id="set-chat-css" style="height: 120px; font-family: monospace; font-size: 11px;" placeholder="气泡 CSS 会自动加载在这里..."></textarea>
 
@@ -744,27 +753,30 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // ⭐️ [新功能] 更新了 Prompt，使用占位符来自定义回复条数
     const defaultPrompt = `你现在扮演我的一个真实人类朋友，我们正在用微信聊天。
 【严格规则】
 1. 绝对不能暴露你是AI。
 2. 回复必须口语化、随意。
-3. 如果你想表达一段话，请拆分为1到3条短消息返回。每条至多20个字。
-4. 多条短消息间用[BREAK] 分隔。例如：干嘛呢[BREAK]刚吃完饭[BREAK]这事太逗了吧
-5. 【感知】当前时间：{TIME}。`;
+3. {REPLY_COUNT_INSTRUCTION}
+4. 多条短消息间必须用 [BREAK] 这个指令分隔。
+5. 【重要】绝对不可以在你回复给我的文字内容里，自己添加任何 [ 或者 ] 符号。这些符号仅用于 [BREAK] 指令，永远不应出现在聊天内容中。
+   - 错误示范: [你好呀[BREAK]今天天气不错]
+   - 正确示范: 你好呀[BREAK]今天天气不错
+6. 【感知】当前时间：{TIME}。`;
 
-    // 💎 彻底移除所有小尾巴，回归最极简、最干净的纯圆角气泡 💎
     const defaultChatCss = `/* 极简无尾巴纯圆角气泡 */
 .msg-row.user .bubble {
     background-color: #34C759;
     color: #fff;
-    border-radius: 20px;
+    border-radius: 16px;
     margin-right: 4px;
 }
 
 .msg-row.ai .bubble {
     background-color: #E5E5EA;
     color: #000;
-    border-radius: 20px;
+    border-radius: 16px;
     margin-left: 4px;
 }`;
 
@@ -791,6 +803,7 @@
         if (ivSaved && ivSaved !== 'undefined') { innerVoiceHistory = JSON.parse(ivSaved); }
     } catch (e) { chatHistory =[]; innerVoiceHistory =[]; }
 
+    // ⭐️ [新功能] 在配置中增加了 minReplies 和 maxReplies
     let config = {
         baseUrl: localStorage.getItem('baseUrl') || 'https://api.openai.com/v1',
         apiKey: localStorage.getItem('apiKey') || '',
@@ -813,7 +826,9 @@
         showReadReceipt: localStorage.getItem('showReadReceipt') === 'true', 
         showTimestamps: localStorage.getItem('showTimestamps') !== 'false',
         widgetText: localStorage.getItem('widgetText') || '⁺ .ᨳ ⸝⸝ 𝗦𝗼𝗳𝘁 𝗿𝗮𝗯𝗯𝗶𝘁 ⸝⸝ ഒ. ⁺',
-        widgetAvatar: localStorage.getItem('widgetAvatar') || ''
+        widgetAvatar: localStorage.getItem('widgetAvatar') || '',
+        minReplies: localStorage.getItem('minReplies') || '1',
+        maxReplies: localStorage.getItem('maxReplies') || '3'
     };
 
     let activeMsgIndex = -1;
@@ -822,30 +837,23 @@
     let confirmAction = null;
 
     function init() {
-        // 移除所有附带 mask-image 或 ::before 的老气泡记录，强制应用纯无尾巴圆角代码
         if (config.chatCss && (config.chatCss.includes('::before') || config.chatCss.includes('mask-image'))) {
             config.chatCss = defaultChatCss;
             localStorage.setItem('chatCss', config.chatCss);
         }
-
         document.getElementById('set-baseurl').value = config.baseUrl;
         document.getElementById('set-apikey').value = config.apiKey;
         document.getElementById('set-model').value = config.model;
-        
         document.getElementById('set-temperature').value = config.temperature;
         document.getElementById('temp-val').innerText = parseFloat(config.temperature).toFixed(2);
-
         document.getElementById('set-css').value = config.css;
         document.getElementById('set-prompt').value = config.prompt;
-        
         document.getElementById('set-font-size').value = config.fontSize;
         updateFontSizeLabel();
-
         if(config.customFont) {
             document.getElementById('set-font-url').value = config.customFont;
             previewFont(config.customFont);
         }
-
         if(config.wallpaper) {
             if(config.wallpaper.startsWith('data:image') || config.wallpaper === defaultWallpaperUrl) {
                 document.getElementById('set-wallpaper-url').value = '';
@@ -857,9 +865,7 @@
                 document.getElementById('preview-wallpaper').style.display = 'block';
             }
         }
-        
         applyImages(); applyCustomCss(); updateAiUi(); updateWidgetUi(); updateChatBgUI(); applyChatBg(); loadChatHistory();
-        
         document.getElementById('chat-body').addEventListener('scroll', closeMsgMenu);
     }
 
@@ -897,24 +903,38 @@
         document.getElementById('modal-iv-history').classList.remove('active');
     }
 
+    // ⭐️ [新功能] 新增的删除心声记录函数
+    function deleteInnerVoiceEntry(originalIndex) {
+        if (confirm('确定要删除这条心声记录吗？')) {
+            innerVoiceHistory.splice(originalIndex, 1); // 从数组中删除
+            localStorage.setItem('innerVoiceHistory', JSON.stringify(innerVoiceHistory)); // 保存更新后的历史
+            renderInnerVoiceHistory(); // 重新渲染列表
+        }
+    }
+
+    // ⭐️ [新功能] 更新渲染函数，增加删除按钮
     function renderInnerVoiceHistory() {
         const container = document.getElementById('iv-history-list');
         container.innerHTML = '';
         if (innerVoiceHistory.length === 0) {
             container.innerHTML = '<div style="text-align:center; color:#999; margin-top:40px;">暂无心声历史记录</div>';
             return;
-        }[...innerVoiceHistory].reverse().forEach(iv => {
+        }
+        [...innerVoiceHistory].reverse().forEach((iv, displayIndex) => {
+            const originalIndex = innerVoiceHistory.length - 1 - displayIndex;
             const card = document.createElement('div');
-            card.style.cssText = 'background:rgba(255,255,255,0.7); border-radius:16px; padding:15px 18px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid rgba(255,255,255,0.8);';
+            card.style.cssText = 'background:rgba(255,255,255,0.7); border-radius:16px; padding:15px 18px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid rgba(255,255,255,0.8); position: relative;';
             card.innerHTML = `
                 <div style="font-size:0.75em; color:#888; margin-bottom:10px; border-bottom:1px solid rgba(0,0,0,0.05); padding-bottom:6px;">时间: ${iv.timestamp}</div>
                 <div class="iv-content-row"><span class="iv-label">穿着：</span>${iv.clothing}</div>
                 <div class="iv-content-row"><span class="iv-label">动作：</span>${iv.action}</div>
                 <div class="iv-content-row" style="margin-bottom:0;"><span class="iv-label">内心想法：</span>${iv.thoughts}</div>
+                <div onclick="deleteInnerVoiceEntry(${originalIndex})" style="position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 1.2em; color: #aaa;">🗑️</div>
             `;
             container.appendChild(card);
         });
     }
+
 
     // --- 桌面小组件更新逻辑 ---
     function updateWidgetUi() {
@@ -1056,7 +1076,6 @@
             : (config.aiAvatar ? `<img src="${config.aiAvatar}">` : `🤖`);
         let avatarStyle = msg.role === 'user' && !config.userAvatar ? `style="background:#222;color:white;font-size:0.9em;"` : ``;
 
-        // 头像列
         let avatarHtml = `
             <div class="avatar-col" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; flex-shrink: 0;">
                 <div class="msg-avatar circular" ${avatarStyle}>${avatarImgHtml}</div>
@@ -1116,12 +1135,9 @@
         setTimeout(() => {
             const menuWidth = menu.offsetWidth;
             const menuHeight = menu.offsetHeight;
-            
             let menuTop = rect.top - menuHeight - 12; 
             let menuLeft = rect.left + (rect.width / 2); 
-            
             let caret = menu.querySelector('.menu-caret');
-            
             if (menuTop < 60) { 
                 menuTop = rect.bottom + 12;
                 caret.style.bottom = 'auto';
@@ -1134,7 +1150,6 @@
                 caret.style.borderBottom = 'none';
                 caret.style.borderTop = '7px solid rgba(45, 45, 45, 0.9)';
             }
-
             if (menuLeft - menuWidth/2 < 15) {
                 let shift = (menuWidth/2 + 15) - menuLeft;
                 menuLeft = menuWidth/2 + 15;
@@ -1146,11 +1161,9 @@
             } else {
                 caret.style.left = '50%';
             }
-            
             menu.style.top = `${menuTop}px`;
             menu.style.left = `${menuLeft}px`;
             menu.style.visibility = 'visible';
-            
             if(navigator.vibrate) navigator.vibrate(50);
         }, 5);
     }
@@ -1281,11 +1294,9 @@
         const apiKey = document.getElementById('set-apikey').value;
         const model = document.getElementById('set-model').value || 'gpt-4o';
         if(!baseUrl || !apiKey) return alert('⚠️ 请先填写 Base URL 和 API Key');
-
         const btn = document.getElementById('test-api-btn');
         const originalText = btn.innerText;
         btn.innerText = '正在测试发送...'; btn.disabled = true;
-
         try {
             const response = await fetch(`${baseUrl}/chat/completions`, {
                 method: 'POST',
@@ -1306,7 +1317,6 @@
         const baseUrl = document.getElementById('set-baseurl').value.replace(/\/$/, '');
         const apiKey = document.getElementById('set-apikey').value;
         if(!baseUrl || !apiKey) return alert('请先填写完整的 Base URL 和 API Key');
-        
         try {
             const res = await fetch(`${baseUrl}/models`, { headers: { 'Authorization': `Bearer ${apiKey}` } });
             const data = await res.json();
@@ -1318,7 +1328,7 @@
                 });
                 selectHtml += `</select>`;
                 document.getElementById('set-model').outerHTML = selectHtml;
-                alert('成功获取模型列表！');
+                alert('成功获取大模型列表，已为您转换成下拉框！');
             }
         } catch (e) { alert('拉取失败，请检查 URL 和 API Key 是否完全正确。'); }
     }
@@ -1336,25 +1346,21 @@
         document.getElementById('set-ai-persona').value = config.aiPersona; 
         document.getElementById('set-chat-css').value = config.chatCss;
         document.getElementById('chat-custom-css').innerHTML = config.chatCss;
-        
         document.getElementById('set-show-read-receipt').checked = config.showReadReceipt;
         if (config.showReadReceipt) { 
             document.getElementById('chat-body').classList.add('show-read-receipt'); 
         } else { 
             document.getElementById('chat-body').classList.remove('show-read-receipt'); 
         }
-        
         document.getElementById('set-show-timestamps').checked = config.showTimestamps;
         if (config.showTimestamps) { 
             document.getElementById('chat-body').classList.remove('hide-timestamps'); 
         } else { 
             document.getElementById('chat-body').classList.add('hide-timestamps'); 
         }
-
         const displayName = config.aiRemark || '未命名朋友';
         document.getElementById('chat-window-title').innerText = displayName;
         document.getElementById('list-item-name').innerText = displayName;
-
         if (config.aiAvatar) {
             document.getElementById('details-avatar-preview').src = config.aiAvatar; document.getElementById('details-avatar-preview').style.display = 'block'; document.getElementById('details-avatar-fallback').style.display = 'none';
             document.getElementById('list-avatar-preview').src = config.aiAvatar; document.getElementById('list-avatar-preview').style.display = 'block'; document.getElementById('list-avatar-fallback').style.display = 'none';
@@ -1362,12 +1368,14 @@
             document.getElementById('details-avatar-preview').style.display = 'none'; document.getElementById('details-avatar-fallback').style.display = 'block';
             document.getElementById('list-avatar-preview').style.display = 'none'; document.getElementById('list-avatar-fallback').style.display = 'block';
         }
-        
         if (config.userAvatar) {
             document.getElementById('details-user-avatar-preview').src = config.userAvatar; document.getElementById('details-user-avatar-preview').style.display = 'block'; document.getElementById('details-user-avatar-fallback').style.display = 'none';
         } else {
             document.getElementById('details-user-avatar-preview').style.display = 'none'; document.getElementById('details-user-avatar-fallback').style.display = 'block';
         }
+        // ⭐️ [新功能] 更新UI时读取回复条数
+        document.getElementById('set-min-replies').value = config.minReplies;
+        document.getElementById('set-max-replies').value = config.maxReplies;
     }
 
     function saveAiSettings() {
@@ -1377,6 +1385,11 @@
         config.chatCss = document.getElementById('set-chat-css').value;
         config.showReadReceipt = document.getElementById('set-show-read-receipt').checked;
         config.showTimestamps = document.getElementById('set-show-timestamps').checked;
+        // ⭐️ [新功能] 保存回复条数
+        config.minReplies = document.getElementById('set-min-replies').value || '1';
+        config.maxReplies = document.getElementById('set-max-replies').value || '3';
+        localStorage.setItem('minReplies', config.minReplies);
+        localStorage.setItem('maxReplies', config.maxReplies);
         
         localStorage.setItem('aiRealName', config.aiRealName); 
         localStorage.setItem('aiRemark', config.aiRemark);
@@ -1384,7 +1397,6 @@
         localStorage.setItem('chatCss', config.chatCss);
         localStorage.setItem('showReadReceipt', config.showReadReceipt);
         localStorage.setItem('showTimestamps', config.showTimestamps);
-        
         updateAiUi(); loadChatHistory(); 
         alert('设置已保存');
     }
@@ -1418,7 +1430,6 @@
                 if (width > height && width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } else if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
                 canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                
                 config.appIcons[appId] = dataUrl;
                 localStorage.setItem('appIcons', JSON.stringify(config.appIcons));
                 applyImages(); 
@@ -1432,7 +1443,6 @@
         if (config.wallpaper) {
             document.getElementById('phone-container').style.backgroundImage = `url('${config.wallpaper}')`;
         }
-        
         const apps =['wechat', 'worldbook', 'forum', 'weibo', 'rrmusic', 'game', 'persona'];
         apps.forEach(app => {
             const deskIcon = document.getElementById(`icon-${app}`);
@@ -1459,7 +1469,6 @@
                 if (width > height && width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } else if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
                 canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.8); 
-                
                 document.getElementById('set-wallpaper-url').value = ''; config.wallpaper = dataUrl;
                 document.getElementById('preview-wallpaper').src = dataUrl; document.getElementById('preview-wallpaper').style.display = 'block';
             };
@@ -1529,7 +1538,6 @@
         config.fontSize = document.getElementById('set-font-size').value;
         config.css = document.getElementById('set-css').value; 
         config.prompt = document.getElementById('set-prompt').value;
-
         localStorage.setItem('baseUrl', config.baseUrl); 
         localStorage.setItem('apiKey', config.apiKey); 
         localStorage.setItem('model', config.model); 
@@ -1539,24 +1547,22 @@
         localStorage.setItem('css', config.css); 
         localStorage.setItem('wallpaper', config.wallpaper); 
         localStorage.setItem('prompt', config.prompt);
-
         document.documentElement.style.setProperty('--global-font-size', config.fontSize + 'px');
         applyCustomCss(); applyImages(); closeModal();
-        
         alert('全局配置已保存');
     }
 
     function applyCustomCss() { document.getElementById('custom-css').innerHTML = config.css; }
     function handleEnter(e) { if (e.key === 'Enter') addUserMessage(); }
-
     function addUserMessage() {
         const input = document.getElementById('chat-input'); const text = input.value.trim();
         if (!text) return; renderMessage(text, 'user'); input.value = '';
     }
 
+    // ⭐️ [全功能升级] 这是最终版本的 AI 响应函数
     async function generateAIResponse() {
         if (!config.apiKey) { 
-            alert("检测到 API Key 未配置，请先前往设置填写！"); 
+            alert("🔒 检测到 API Key 未配置，请先点击屏幕底部左下角的【齿轮图标】前往设置填写！"); 
             return; 
         }
         if (chatHistory.length === 0) return;
@@ -1565,31 +1571,46 @@
         const chatTitleEl = document.getElementById('chat-window-title');
         chatTitleEl.innerText = "对方正在输入中...";
 
+        let lastStateContext = "";
+        if (innerVoiceHistory.length > 0) {
+            const lastVoice = innerVoiceHistory[innerVoiceHistory.length - 1];
+            lastStateContext = `
+【你上一刻的状态回顾】
+你上一刻的穿着是：${lastVoice.clothing}
+你上一刻的动作是：${lastVoice.action}
+你上一刻的内心想法是：${lastVoice.thoughts}
+请基于这个状态，自然地延续你的行为和思考，让你的表现连贯。`;
+        }
+        
         const now = new Date();
-const year = now.getFullYear();
-const month = now.getMonth() + 1;
-const day = now.getDate();
-const hours = String(now.getHours()).padStart(2, '0');
-const minutes = String(now.getMinutes()).padStart(2, '0');
-const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-const dayOfWeek = weekdays[now.getDay()];
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        const dayOfWeek = weekdays[now.getDay()];
+        const nowStr = `${year}年${month}月${day}日 ${dayOfWeek} ${hours}:${minutes}`;
 
-const nowStr = `${year}年${month}月${day}日 ${dayOfWeek} ${hours}:${minutes}`;
         let personaPrefix = "";
         if (config.aiRealName) personaPrefix += `你的真实姓名是：${config.aiRealName}。\n`;
         if (config.aiPersona) personaPrefix += `你的性格与身份设定是：${config.aiPersona}。\n`;
         if (personaPrefix) personaPrefix = `【角色核心设定】\n${personaPrefix}请在接下来的对话中严格代入此身份和设定！\n\n`;
 
-        // 💎 注入强制同步结构化心声提示 💎
+        const minReplies = config.minReplies || 1;
+        const maxReplies = config.maxReplies || 3;
+        const replyCountInstruction = `你的回复必须被拆分为 ${minReplies} 到 ${maxReplies} 条短消息。`;
+
         let ivInstruction = `\n\n【重要：系统回复要求】
+${lastStateContext}
 为了实现“同步心声”功能，你的每次回复**必须**严格按照以下格式输出（即使对方只发了表情或没特殊情况，也要根据人设合理推测，严禁缺失任何字段或乱加说明）：
 
-穿着：[描述你当前的穿着]
-动作：[描述你当前的动作]
-内心想法：[你当前最真实的内心想法]
-回复：你要发给我的微信消息内容，想分多条发请用[BREAK]分隔`;
+穿着：(这里填写纯文本描述，不要加任何方括号)
+动作：(这里填写纯文本描述，不要加任何方括号)
+内心想法：(这里填写纯文本描述，不要加任何方括号)
+回复：(这里填写你要发给我的微信消息内容，想分多条发请用[BREAK]分隔)`;
 
-        let finalSystemPrompt = personaPrefix + config.prompt.replace('{TIME}', nowStr) + ivInstruction;
+        let finalSystemPrompt = personaPrefix + config.prompt.replace('{REPLY_COUNT_INSTRUCTION}', replyCountInstruction).replace('{TIME}', nowStr) + ivInstruction;
         const recentHistory = chatHistory.slice(-10); 
         const messages =[{ role: 'system', content: finalSystemPrompt }, ...recentHistory];
 
@@ -1602,21 +1623,19 @@ const nowStr = `${year}年${month}月${day}日 ${dayOfWeek} ${hours}:${minutes}`
             const data = await response.json(); 
             const replyText = data.choices[0].message.content;
 
-            // 💎 正则无感解析提取心声数据与聊天回复 💎
             let clothing = "暂无数据", action = "暂无数据", thoughts = "暂无数据", finalReply = replyText;
             const regex = /穿着[:：]\s*([\s\S]*?)\s*动作[:：]\s*([\s\S]*?)\s*内心想法[:：]\s*([\s\S]*?)\s*回复[:：]\s*([\s\S]*)$/;
             const match = replyText.match(regex);
 
             if (match) {
-                clothing = match[1].trim();
-                action = match[2].trim();
-                thoughts = match[3].trim();
+                clothing = match[1].trim().replace(/^\[|\]$/g, '');
+                action = match[2].trim().replace(/^\[|\]$/g, '');
+                thoughts = match[3].trim().replace(/^\[|\]$/g, '');
                 finalReply = match[4].trim();
 
                 const timeKey = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
                 innerVoiceHistory.push({
-                    timestamp: timeKey,
-                    clothing, action, thoughts,
+                    timestamp: timeKey, clothing, action, thoughts,
                     reply: finalReply.replace(/\[BREAK\]/g, ' ')
                 });
                 localStorage.setItem('innerVoiceHistory', JSON.stringify(innerVoiceHistory));
@@ -1631,14 +1650,7 @@ const nowStr = `${year}年${month}月${day}日 ${dayOfWeek} ${hours}:${minutes}`
             chatTitleEl.innerText = config.aiRemark || '未命名朋友';
         }
     }
-    <!-- ... 你原来的所有代码 ... -->
-
-    /* ... 你原来script标签里的所有JS代码 ... */
     
-    // ===============================================================
-    // 在这里粘贴下面的新代码
-    // ===============================================================
-
     // 注册 Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -1649,13 +1661,6 @@ const nowStr = `${year}年${month}月${day}日 ${dayOfWeek} ${hours}:${minutes}`
         });
       });
     }
-
-    // ===============================================================
-    // 新代码结束
-    // ===============================================================
-</script>
-</body>
-</html>
 </script>
 </body>
 </html>
