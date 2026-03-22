@@ -1580,7 +1580,7 @@
 穿着：[描述你当前的穿着]
 动作：[描述你当前的动作]
 内心想法：[你当前最真实的内心想法]
-回复：[你要发给我的微信消息内容，想分多条发请用[BREAK]分隔]`;
+回复：你要发给我的微信消息内容，想分多条发请用[BREAK]分隔`;
 
         let finalSystemPrompt = personaPrefix + config.prompt.replace('{TIME}', nowStr) + ivInstruction;
         const recentHistory = chatHistory.slice(-10); 
