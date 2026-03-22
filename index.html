@@ -12,313 +12,53 @@
 <link rel="apple-touch-icon" id="apple-touch-icon" href="https://img.heliar.top/file/1774020720552_IMG_5899.jpeg">
 
 <style id="base-css">
-    /* 全局变量 */
-    :root { 
-        --global-font-size: 15px; 
-    }
+    /* ========================================================= */
+    /* 🌟 基础与桌面样式区 🌟 */
+    /* ========================================================= */
+    :root { --global-font-size: 15px; }
     
-    /* 基础重置 */
     * { 
-        box-sizing: border-box; 
-        margin: 0; 
-        padding: 0; 
+        box-sizing: border-box; margin: 0; padding: 0; 
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
         -webkit-tap-highlight-color: transparent; 
     }
     
-    body { 
-        background-color: #000; 
-        overflow: hidden; 
-        margin: 0; 
-        padding: 0; 
-        width: 100vw; 
-        height: 100vh; 
-    }
+    body { background-color: #000; overflow: hidden; margin: 0; padding: 0; width: 100vw; height: 100vh; }
     
-    /* 手机桌面主容器 */
-    #phone-container { 
-        position: fixed; 
-        top: 0; 
-        left: 0; 
-        right: 0; 
-        bottom: 0; 
-        background: url('https://img.heliar.top/file/1773998063711_IMG_5804.png') no-repeat center center/cover; 
-        overflow: hidden; 
-        display: flex; 
-        flex-direction: column; 
-        font-size: var(--global-font-size); 
-        transform: translate3d(0,0,0); 
-        will-change: background-image; 
-    }
+    #phone-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: url('https://img.heliar.top/file/1773998063711_IMG_5804.png') no-repeat center center/cover; overflow: hidden; display: flex; flex-direction: column; font-size: var(--global-font-size); transform: translate3d(0,0,0); will-change: background-image; }
     
-    /* 桌面应用图标网格 */
-    #desktop-icons { 
-        flex: 1; 
-        padding: 20px 15px; 
-        padding-top: calc(max(60px, env(safe-area-inset-top, 40px) + 20px)); 
-        display: grid; 
-        grid-template-columns: repeat(4, 1fr); 
-        grid-auto-rows: min-content; 
-        row-gap: 25px; 
-        column-gap: 12px;
-        justify-items: center; 
-        align-items: start; 
-        overflow-y: auto;
-    }
-
-    /* 桌面时钟组件 */
-    #clock-widget {
-        grid-column: span 2;
-        grid-row: span 2;
-        width: 100%;
-        aspect-ratio: 1 / 1; 
-        background: rgba(255, 255, 255, 0.35);
-        backdrop-filter: blur(35px); 
-        -webkit-backdrop-filter: blur(35px);
-        border-radius: 30px; 
-        box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 25px rgba(0,0,0,0.08);
-        border: 1.5px solid rgba(255,255,255,0.6);
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        position: relative;
-    }
+    #desktop-icons { flex: 1; padding: 20px 15px; padding-top: calc(max(60px, env(safe-area-inset-top, 40px) + 20px)); display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: min-content; row-gap: 25px; column-gap: 12px; justify-items: center; align-items: start; overflow-y: auto; }
     
-    .clock-inner-ring {
-        position: absolute;
-        inset: 12px;
-        border-radius: 20px;
-        border: 3.5px dashed #000;
-        opacity: 0.25; 
-        pointer-events: none;
-    }
-
-    #clock-time {
-        font-size: 3.6em;
-        font-weight: 300; 
-        color: #000;
-        letter-spacing: -2px;
-        z-index: 2;
-        text-shadow: 0 2px 15px rgba(255,255,255,0.9);
-        display: inline-block;
-        transform: scaleY(1.3);
-        transform-origin: center;
-    }
+    #clock-widget { grid-column: span 2; grid-row: span 2; width: 100%; aspect-ratio: 1 / 1; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 30px; box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 25px rgba(0,0,0,0.08); border: 1.5px solid rgba(255,255,255,0.6); display: flex; justify-content: center; align-items: center; position: relative; }
+    .clock-inner-ring { position: absolute; inset: 12px; border-radius: 20px; border: 3.5px dashed #000; opacity: 0.25; pointer-events: none; }
+    #clock-time { font-size: 3.6em; font-weight: 300; color: #000; letter-spacing: -2px; z-index: 2; text-shadow: 0 2px 15px rgba(255,255,255,0.9); display: inline-block; transform: scaleY(1.3); transform-origin: center; }
     
-    /* 桌面图标通用样式 */
-    .app-icon-wrapper { 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        gap: 6px; 
-        cursor: pointer; 
-        width: 100%; 
-    }
-    
-    .app-icon { 
-        width: 62px; 
-        height: 62px; 
-        background: rgba(255, 255, 255, 0.35); 
-        backdrop-filter: blur(35px); 
-        -webkit-backdrop-filter: blur(35px); 
-        border-radius: 16px; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 20px rgba(0,0,0,0.08); 
-        border: 1.5px solid rgba(255,255,255,0.6);
-        background-size: cover; 
-        background-position: center; 
-    }
-    
-    .app-name { 
-        color: #000; 
-        font-size: 12px; 
-        font-weight: 600; 
-        text-shadow: none; 
-        white-space: nowrap; 
-        overflow: hidden; 
-        text-overflow: ellipsis; 
-        max-width: 90%; 
-        text-align: center; 
-    }
+    .app-icon-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 100%; }
+    .app-icon { width: 62px; height: 62px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 20px rgba(0,0,0,0.08); border: 1.5px solid rgba(255,255,255,0.6); background-size: cover; background-position: center; }
+    .app-name { color: #000; font-size: 12px; font-weight: 600; text-shadow: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; text-align: center; }
 
-    /* 桌面自定义磨砂组件 */
-    #custom-desktop-widget {
-        grid-column: span 4;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 35px;
-        margin-bottom: 10px;
-    }
+    #custom-desktop-widget { grid-column: span 4; width: 100%; display: flex; justify-content: center; align-items: center; padding-top: 35px; margin-bottom: 10px; }
+    .widget-oval { width: 90%; height: 65px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 35px; border: 1.5px solid rgba(255,255,255,0.6); box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), 0 8px 25px rgba(0,0,0,0.08); position: relative; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 13px; }
+    .widget-avatar { width: 72px; height: 72px; background: rgba(255, 255, 255, 0.95); border-radius: 50%; position: absolute; top: -40px; left: 50%; transform: translateX(-50%); box-shadow: 0 5px 15px rgba(0,0,0,0.12); border: 2px solid rgba(255,255,255,0.95); overflow: hidden; z-index: 2; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .widget-avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .widget-text-input { width: 85%; background: transparent; border: none; text-align: center; font-size: 13px; font-weight: 600; color: #333; outline: none; z-index: 1; font-family: inherit; }
 
-    .widget-oval {
-        width: 90%;
-        height: 65px; 
-        background: rgba(255, 255, 255, 0.35);
-        backdrop-filter: blur(35px); 
-        -webkit-backdrop-filter: blur(35px);
-        border-radius: 35px; 
-        border: 1.5px solid rgba(255,255,255,0.6);
-        box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), 0 8px 25px rgba(0,0,0,0.08);
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end; 
-        padding-bottom: 13px;
-    }
+    #bottom-dock { margin: 15px; margin-bottom: max(25px, env(safe-area-inset-bottom, 20px)); height: 85px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 0 15px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.5); box-shadow: inset 0 4px 15px rgba(255,255,255,0.6), 0 8px 25px rgba(0,0,0,0.1); }
+    .dock-icon { width: 58px; height: 58px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 8px rgba(255,255,255,0.8), 0 4px 10px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5); cursor: pointer; }
+    #home-indicator { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px; background-color: #000; border-radius: 10px; z-index: 9999; pointer-events: none; }
 
-    .widget-avatar {
-        width: 72px;
-        height: 72px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 50%;
-        position: absolute;
-        top: -40px; 
-        left: 50%;
-        transform: translateX(-50%);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-        border: 2px solid rgba(255,255,255,0.95);
-        overflow: hidden;
-        z-index: 2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    .widget-avatar img { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
-        display: none; 
-    }
-
-    .widget-text-input {
-        width: 85%;
-        background: transparent;
-        border: none;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 600;
-        color: #333;
-        outline: none;
-        z-index: 1;
-        font-family: inherit;
-    }
-
-    /* 底部 Dock 栏 */
-    #bottom-dock { 
-        margin: 15px; 
-        margin-bottom: max(25px, env(safe-area-inset-bottom, 20px)); 
-        height: 85px; 
-        background: rgba(255, 255, 255, 0.35); 
-        backdrop-filter: blur(35px); 
-        -webkit-backdrop-filter: blur(35px); 
-        border-radius: 30px; 
-        display: flex; 
-        justify-content: space-around; 
-        align-items: center; 
-        padding: 0 15px; 
-        flex-shrink: 0; 
-        border: 1px solid rgba(255,255,255,0.5); 
-        box-shadow: inset 0 4px 15px rgba(255,255,255,0.6), 0 8px 25px rgba(0,0,0,0.1); 
-    }
-    
-    .dock-icon { 
-        width: 58px; 
-        height: 58px; 
-        background: rgba(255, 255, 255, 0.4); 
-        backdrop-filter: blur(25px); 
-        -webkit-backdrop-filter: blur(25px); 
-        border-radius: 14px; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        box-shadow: inset 0 2px 8px rgba(255,255,255,0.8), 0 4px 10px rgba(0,0,0,0.05); 
-        border: 1px solid rgba(255,255,255,0.5);
-        cursor: pointer; 
-    }
-
-    #home-indicator { 
-        position: absolute; 
-        bottom: 8px; 
-        left: 50%; 
-        transform: translateX(-50%); 
-        width: 134px; 
-        height: 5px; 
-        background-color: #000; 
-        border-radius: 10px; 
-        z-index: 9999; 
-        pointer-events: none; 
-    }
-
-    /* 全局半透明磨砂玻璃 UI / 弹窗 */
-    .modal { 
-        position: absolute; 
-        top: 0; 
-        left: 0; 
-        width: 100%; 
-        height: 100%; 
-        background: rgba(240, 240, 245, 0.55); 
-        backdrop-filter: blur(35px); 
-        -webkit-backdrop-filter: blur(35px); 
-        z-index: 300; 
-        display: none; 
-        flex-direction: column; 
-    }
-
-    .modal.active { 
-        display: flex; 
-    }
-
-    .modal-header { 
-        padding-top: env(safe-area-inset-top, 20px); 
-        height: calc(44px + env(safe-area-inset-top, 20px)); 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        padding-left: 15px; 
-        padding-right: 15px; 
-        background: transparent; 
-        color: #000; 
-        font-weight: bold; 
-        flex-shrink: 0; 
-        border-bottom: 1px solid rgba(0,0,0,0.1); 
-    }
-
-    .modal-content { 
-        padding: 20px; 
-        flex: 1; 
-        overflow-y: auto; 
-        padding-bottom: max(30px, env(safe-area-inset-bottom, 20px)); 
-    }
-
-    .modal-btn { 
-        color: #000; 
-        cursor: pointer; 
-        font-weight: bold; 
-        border: none; 
-        background: none; 
-        font-size: 1em; 
-    }
+    /* ========================================================= */
+    /* 🌟 全局弹窗与设置区 🌟 */
+    /* ========================================================= */
+    .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 240, 245, 0.55); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); z-index: 300; display: none; flex-direction: column; }
+    .modal.active { display: flex; }
+    .modal-header { padding-top: env(safe-area-inset-top, 20px); height: calc(44px + env(safe-area-inset-top, 20px)); display: flex; justify-content: space-between; align-items: center; padding-left: 15px; padding-right: 15px; background: transparent; color: #000; font-weight: bold; flex-shrink: 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .modal-content { padding: 20px; flex: 1; overflow-y: auto; padding-bottom: max(30px, env(safe-area-inset-bottom, 20px)); }
+    .modal-btn { color: #000; cursor: pointer; font-weight: bold; border: none; background: none; font-size: 1em; }
     
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; margin-bottom: 8px; color: #333; font-size: 0.9em; font-weight: 600; }
-    .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="password"], .form-group textarea, .form-group select { 
-        width: 100%; 
-        padding: 12px; 
-        border-radius: 12px; 
-        border: 1px solid rgba(255,255,255,0.6); 
-        font-size: 0.95em; 
-        outline: none; 
-        background: rgba(255,255,255,0.7); 
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); 
-        color: #000; 
-        box-sizing: border-box;
-    }
+    .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="password"], .form-group textarea, .form-group select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); font-size: 0.95em; outline: none; background: rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); color: #000; box-sizing: border-box;}
     .form-group textarea { height: 80px; resize: none; }
     
     .ins-icon-editor { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 5px; justify-items: center; }
@@ -351,6 +91,9 @@
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 22px; width: 22px; border-radius: 50%; background: #000; cursor: pointer; margin-top: -9px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
     input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(0,0,0,0.15); border-radius: 2px; }
 
+    /* ========================================================= */
+    /* 🌟 其他页面与组件 🌟 */
+    /* ========================================================= */
     .game-list { display: flex; flex-direction: column; gap: 15px; width: 100%; padding-bottom: 20px; }
     .game-card { width: 100%; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.6); display: flex; align-items: center; gap: 18px; cursor: pointer; transition: transform 0.2s, background 0.2s; }
     .game-card:active { transform: scale(0.97); background: rgba(230,230,230,0.8); }
@@ -409,7 +152,10 @@
     .nav-item.active { color: #07c160; font-weight: 600; }
     .nav-icon { font-size: 1.6em; }
 
-    /* --- 聊天气泡样式 --- */
+    /* ========================================================= */
+    /* 🌟 完美的微信气泡与图片交互样式 🌟 */
+    /* ========================================================= */
+    
     .chat-body { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
     .msg-row { display: flex; width: 100%; align-items: center; gap: 0; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; transition: background 0.2s; }
     .msg-inner-container { display: flex; flex: 1; align-items: flex-start; gap: 5px; width: 100%; }
@@ -422,7 +168,7 @@
     .msg-avatar.circular { border-radius: 50%; }
     .msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
     
-    /* 🌟 修改点：气泡加宽，最大宽度从 65% 改为 75%，防止几字换行 */
+    /* 🌟 气泡加宽，完美适配更多文字 */
     .bubble { 
         max-width: 75%; 
         font-size: 1em; 
@@ -432,21 +178,20 @@
         position: relative; 
         box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
     }
-    
-    /* 🌟 新增：独立图片消息的气泡样式（无绿底、无边框） */
+
+    /* 🌟 图片气泡的极致还原：没有绿框，完全透明，独立存在 */
     .bubble.image-only-bubble {
         background: transparent !important;
         padding: 0 !important;
         box-shadow: none !important;
         border: none !important;
-        margin-right: 0 !important; /* 确保靠右对齐不受影响 */
     }
     .bubble.image-only-bubble img {
-        max-width: 100%;
-        border-radius: 12px; /* 给纯图片加上圆角 */
+        max-width: 180px; /* 限制图片最大宽度，更像真实微信 */
+        border-radius: 12px;
         display: block;
         margin: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* 给图片单独加一点点阴影更真实 */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15); /* 加一点立体感 */
     }
 
     .msg-meta { display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 2px; flex-shrink: 0; }
@@ -473,43 +218,51 @@
     .multi-select-mode #multi-select-footer { display: flex; }
     .multi-select-mode .chat-footer { display: none; }
 
-    /* 聊天详情设定页 */
-    .details-body { flex: 1; overflow-y: auto; padding: 30px 20px max(50px, env(safe-area-inset-bottom, 20px)) 20px; display: flex; flex-direction: column; align-items: center; }
+    /* ========================================================= */
+    /* 🌟 防止屏幕卡死的救星指令 🌟 */
+    /* ========================================================= */
     
-    .avatars-container { display: flex; gap: 40px; margin-bottom: 30px; justify-content: center; width: 100%; }
-    .avatar-edit-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-    
-    .avatar-upload-label { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.1); position: relative; border: 2px solid #fff; }
-    .avatar-upload-label img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .avatar-upload-label .fallback { font-size: 2.2em; color: #555; }
-    .details-display-name { font-size: 0.9em; font-weight: 600; color: #333; }
-    
-    .details-form { width: 100%; padding-bottom: 20px; }
-    .details-form label { display: block; margin-top: 18px; margin-bottom: 8px; color: #333; font-size: 0.9em; font-weight: 600; }
-    .details-form input[type="text"], .details-form input[type="number"], .details-form textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); font-size: 0.95em; outline: none; background: rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); color: #000; box-sizing: border-box; }
-    .details-form textarea { resize: none; }
-
-    #clear-chat-btn { width: 100%; padding: 15px; background-color: #ff3b30; color: white; border: none; border-radius: 16px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); }
-    #clear-chat-btn:active { background-color: #d9342b; }
-    
-    /* 朋友圈背景 */
-    .profile-header-float { position: absolute; top: 0; left: 0; width: 100%; height: calc(44px + env(safe-area-inset-top, 20px)); padding-top: env(safe-area-inset-top, 20px); z-index: 10; display: flex; align-items: center; padding-left: 15px; }
-    .profile-back { font-size: 1.8em; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.6); cursor: pointer; }
-    
-    .profile-bg { height: 320px; background: #999 url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop') center/cover; position: relative; cursor: pointer; transition: opacity 0.2s; }
-    .profile-bg:active { opacity: 0.9; }
-    .profile-bg-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.7); font-size: 0.85em; text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: none; }
-    
-    .profile-avatar-wrapper { position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 85px; height: 85px; border-radius: 50%; border: 3px solid #fff; background: #eee; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 2.2em; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .profile-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .profile-name { margin-top: 50px; text-align: center; font-size: 1.3em; font-weight: 600; color: #000; }
-
-    /* 🌟 核心修复：苹果卡死问题的救星（给所有的幕布加 cursor: pointer） 🌟 */
     #iv-backdrop, #msg-action-backdrop, #chat-menu-backdrop { 
         cursor: pointer; 
     }
 
-    #iv-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.25); z-index: 499; display: none; opacity: 0; transition: opacity 0.2s; }
+    #msg-action-backdrop { 
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100vw; 
+        height: 100vh; 
+        z-index: 399; 
+    }
+    
+    #iv-backdrop { 
+        position: fixed; 
+        top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.25); 
+        z-index: 499; 
+        display: none; 
+        opacity: 0; 
+        transition: opacity 0.2s; 
+    }
+    
+    #chat-menu-backdrop { 
+        position: fixed; 
+        top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background: transparent; 
+        z-index: 298; 
+        display: none; 
+    }
+
+    /* 弹出菜单和卡片样式 */
+    #msg-action-menu { display: none; position: fixed; z-index: 400; background: rgba(45, 45, 45, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 8px; padding: 0 5px; box-shadow: 0 5px 20px rgba(0,0,0,0.25); transform: translateX(-50%); transition: opacity 0.2s; }
+    .action-btn { color: #fff; font-size: 0.85em; padding: 0 14px; cursor: pointer; white-space: nowrap; font-weight: 500; height: 38px; display: flex; align-items: center; justify-content: center; }
+    .action-btn:active { opacity: 0.6; }
+    .action-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.2); }
+    .menu-caret { position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; }
+
     #iv-backdrop.active { display: block; opacity: 1; }
     #inner-voice-card { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 340px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border: 1px solid rgba(255,255,255,0.6); border-radius: 22px; padding: 25px 20px; z-index: 500; display: none; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.12); opacity: 0; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); }
     #inner-voice-card.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -518,10 +271,13 @@
     .iv-content-row { margin-bottom: 12px; font-size: 0.95em; color: #333; line-height: 1.5; font-weight: 500; }
     .iv-label { font-weight: bold; color: #000; }
 
+    .iv-delete-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .iv-delete-btn svg { width: 16px; height: 16px; transition: transform 0.2s; fill: #ff3b30; }
+    .iv-delete-btn:active svg { transform: scale(0.85); }
+
     /* ========================================================= */
-    /* 🌟 菜单和按钮美化区 🌟 */
+    /* 🌟 底部聊天操作区与发送按钮 🌟 */
     /* ========================================================= */
-    
     .chat-footer { background: rgba(255,255,255,0.6); border-top: 1px solid rgba(0,0,0,0.08); padding: 10px 15px max(35px, env(safe-area-inset-bottom, 20px)) 15px; flex-shrink: 0; position: relative; } 
     .chat-input-row { display: flex; gap: 10px; align-items: center; }
     .chat-input-row input { flex: 1; height: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.8); padding: 0 16px; font-size: 1em; outline: none; background: rgba(255, 255, 255, 0.7); box-shadow: inset 0 1px 4px rgba(0,0,0,0.05); }
@@ -532,7 +288,6 @@
     .chat-menu-btn { background-color: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     .ai-reply-btn:active, .chat-menu-btn:active { background-color: #f0f0f0; }
 
-    #chat-menu-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.1); z-index: 298; display: none; }
     #chat-menu-panel { position: absolute; bottom: calc(100% + 10px); left: 15px; width: 250px; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.6); border-radius: 20px; padding: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); display: flex; justify-content: space-around; align-items: center; gap: 15px; opacity: 0; transform: translateY(10px); transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: none; z-index: 299; }
     #chat-menu-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .chat-menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
@@ -540,21 +295,32 @@
     .chat-menu-item:active .chat-menu-icon { background: rgba(220,220,220,0.8); }
     .chat-menu-name { font-size: 11px; font-weight: 600; color: #333; }
 
-    /* 消息气泡长按菜单 */
-    #msg-action-menu { display: none; position: fixed; z-index: 400; background: rgba(45, 45, 45, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 8px; padding: 0 5px; box-shadow: 0 5px 20px rgba(0,0,0,0.25); transform: translateX(-50%); transition: opacity 0.2s; }
-    .action-btn { color: #fff; font-size: 0.85em; padding: 0 14px; cursor: pointer; white-space: nowrap; font-weight: 500; height: 38px; display: flex; align-items: center; justify-content: center; }
-    .action-btn:active { opacity: 0.6; }
-    .action-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.2); }
-    .menu-caret { position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; }
-
-    /* 删除心声的小按钮 */
-    .iv-delete-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-    .iv-delete-btn svg { width: 16px; height: 16px; transition: transform 0.2s; fill: #ff3b30; }
-    .iv-delete-btn:active svg { transform: scale(0.85); }
+    /* 详情页其他杂项 */
+    .details-body { flex: 1; overflow-y: auto; padding: 30px 20px max(50px, env(safe-area-inset-bottom, 20px)) 20px; display: flex; flex-direction: column; align-items: center; }
+    .avatars-container { display: flex; gap: 40px; margin-bottom: 30px; justify-content: center; width: 100%; }
+    .avatar-edit-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .avatar-upload-label { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.1); position: relative; border: 2px solid #fff; }
+    .avatar-upload-label img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .avatar-upload-label .fallback { font-size: 2.2em; color: #555; }
+    .details-display-name { font-size: 0.9em; font-weight: 600; color: #333; }
+    .details-form { width: 100%; padding-bottom: 20px; }
+    .details-form label { display: block; margin-top: 18px; margin-bottom: 8px; color: #333; font-size: 0.9em; font-weight: 600; }
+    .details-form input[type="text"], .details-form input[type="number"], .details-form textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); font-size: 0.95em; outline: none; background: rgba(255,255,255,0.7); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); color: #000; box-sizing: border-box; }
+    .details-form textarea { resize: none; }
+    #clear-chat-btn { width: 100%; padding: 15px; background-color: #ff3b30; color: white; border: none; border-radius: 16px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); }
+    #clear-chat-btn:active { background-color: #d9342b; }
+    
+    .profile-header-float { position: absolute; top: 0; left: 0; width: 100%; height: calc(44px + env(safe-area-inset-top, 20px)); padding-top: env(safe-area-inset-top, 20px); z-index: 10; display: flex; align-items: center; padding-left: 15px; }
+    .profile-back { font-size: 1.8em; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.6); cursor: pointer; }
+    .profile-bg { height: 320px; background: #999 url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop') center/cover; position: relative; cursor: pointer; transition: opacity 0.2s; }
+    .profile-bg:active { opacity: 0.9; }
+    .profile-bg-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.7); font-size: 0.85em; text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: none; }
+    .profile-avatar-wrapper { position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 85px; height: 85px; border-radius: 50%; border: 3px solid #fff; background: #eee; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 2.2em; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .profile-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .profile-name { margin-top: 50px; text-align: center; font-size: 1.3em; font-weight: 600; color: #000; }
 
 </style>
 
-<!-- 用户自定义CSS区域 -->
 <style id="chat-custom-css"></style>
 <style id="custom-css"></style>
 <style id="dynamic-font-style"></style>
@@ -562,7 +328,6 @@
 <body>
 
 <div id="phone-container">
-    <!-- 桌布区域 -->
     <div id="desktop-icons">
         <div id="clock-widget">
             <div class="clock-inner-ring" id="clock-ring"></div>
@@ -611,7 +376,6 @@
         </div>
     </div>
 
-    <!-- 底部固定栏 -->
     <div id="bottom-dock">
         <div class="dock-icon" onclick="openModal('modal-settings')">
             <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#555" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -625,13 +389,8 @@
     </div>
     <div id="home-indicator"></div>
 
-    <!-- 全局设置页面 -->
     <div id="modal-settings" class="modal">
-        <div class="modal-header">
-            <span class="modal-btn" onclick="closeModal('modal-settings')">取消</span>
-            <span>全局设置</span>
-            <span class="modal-btn" style="opacity:0">保存</span>
-        </div>
+        <div class="modal-header"><span class="modal-btn" onclick="closeModal('modal-settings')">取消</span><span>全局设置</span><span class="modal-btn" style="opacity:0">保存</span></div>
         <div class="modal-content">
             <div style="margin-top: 10px; padding-top: 10px;">
                 <div class="form-group"><label>Base URL</label><input type="text" id="set-baseurl"></div>
@@ -661,7 +420,6 @@
         </div>
     </div>
 
-    <!-- 桌面美化页面 -->
     <div id="modal-beautify" class="modal">
         <div class="modal-header"><span class="modal-btn" onclick="closeModal('modal-beautify')">取消</span><span>桌面美化</span><span class="modal-btn" style="opacity:0">保存</span></div>
         <div class="modal-content">
@@ -697,7 +455,6 @@
         </div>
     </div>
 
-    <!-- 预设与系统 Prompt 页 -->
     <div id="modal-presets" class="modal">
         <div class="modal-header"><span class="modal-btn" onclick="closeModal('modal-presets')">取消</span><span>AI预设</span><span class="modal-btn" style="opacity:0">保存</span></div>
         <div class="modal-content">
@@ -706,7 +463,6 @@
         </div>
     </div>
 
-    <!-- 微信 APP 主界面 -->
     <div id="wechat-app" class="app-page">
         <div class="wechat-header"><div class="wechat-back" onclick="closeApp('wechat-app')">‹</div><div class="wechat-title">微信</div></div>
         <div class="wechat-body">
@@ -743,7 +499,6 @@
         </div>
     </div>
     
-    <!-- 其他 APP 的占位符页面 -->
     <div id="worldbook-app" class="app-page"><div class="app-header"><div class="app-back" onclick="closeApp('worldbook-app')">‹</div><div class="app-title">世界书</div></div><div class="app-body">📖 世界书系统构建中...</div></div>
     <div id="forum-app" class="app-page"><div class="app-header"><div class="app-back" onclick="closeApp('forum-app')">‹</div><div class="app-title">论坛</div></div><div class="app-body">📢 论坛版块施工中...</div></div>
     <div id="weibo-app" class="app-page"><div class="app-header"><div class="app-back" onclick="closeApp('weibo-app')">‹</div><div class="app-title">微博</div></div><div class="app-body">🌍 微博吃瓜前线待开放...</div></div>
@@ -771,7 +526,6 @@
         </div>
     </div>
 
-    <!-- 🌟 核心：聊天主界面 🌟 -->
     <div id="chat-interface">
         <div class="chat-header">
             <div class="chat-back" onclick="closeChatWindow()">‹</div>
@@ -781,9 +535,7 @@
         <div class="chat-body" id="chat-body"></div>
         <div class="chat-footer">
             
-            <!-- 点击外部关闭菜单的隐形幕布 -->
             <div id="chat-menu-backdrop" onclick="toggleChatMenu()"></div>
-            <!-- 左侧弹出的菜单面板 -->
             <div id="chat-menu-panel">
                 <div class="chat-menu-item" onclick="regenerateLastResponse()">
                     <div class="chat-menu-icon">
@@ -807,7 +559,6 @@
                 </label>
             </div>
 
-            <!-- 输入行 -->
             <div class="chat-input-row">
                 <button class="chat-menu-btn" onclick="toggleChatMenu()">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="#000"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
@@ -820,14 +571,12 @@
             </div>
         </div>
         
-        <!-- 多选模式底部栏 -->
         <div id="multi-select-footer">
             <span style="font-weight: 600; cursor: pointer; padding: 10px; color: #555;" onclick="cancelMultiSelect()">取消</span>
             <span id="multi-select-delete-btn" style="color: #999; font-weight: bold; cursor: pointer; padding: 10px; opacity: 0.5; transition: 0.2s;" onclick="deleteSelectedMsgs()">删除 (0)</span>
         </div>
     </div>
 
-    <!-- 🌟 聊天详情与人设页 🌟 -->
     <div id="chat-details-page">
         <div class="chat-header">
             <div class="chat-back" onclick="closeChatDetails()">‹</div>
@@ -860,11 +609,11 @@
                 <input type="text" id="set-ai-remark" placeholder="输入列表展示的备注名...">
                 
                 <label style="margin-top: 18px;">角色设定 (AI的人设)</label>
-                <textarea id="set-ai-persona" style="height: 100px;" placeholder="例如：此处输入角色人物设定..."></textarea>
+                <textarea id="set-ai-persona" style="height: 100px;" placeholder="例如：你是一个脾气有点暴躁的女孩..."></textarea>
                 
-                <!-- 🌟 新增：我的人设（AI眼里的我） 🌟 -->
+                <!-- 我的人设卡片区域 -->
                 <label style="margin-top: 18px; color:#007aff;">我的人设 (AI眼中的我)</label>
-                <textarea id="set-user-persona" style="height: 100px; border: 1px solid rgba(0, 122, 255, 0.4);" placeholder="此处输入你自己的人物设定..."></textarea>
+                <textarea id="set-user-persona" style="height: 100px; border: 1px solid rgba(0, 122, 255, 0.4);" placeholder="例如：我是一个喜欢摄影的大学生，性格有点调皮..."></textarea>
                 
                 <div style="display: flex; gap: 15px; align-items: center; margin-top: 18px;">
                     <label style="margin: 0; flex-shrink: 0;">回复条数:</label>
@@ -902,7 +651,6 @@
         </div>
     </div>
 
-    <!-- 朋友圈详情页 -->
     <div id="profile-page">
         <div class="profile-header-float"><div class="profile-back" onclick="closeProfile()">‹</div></div>
         <div class="profile-bg" id="profile-bg-display" onclick="document.getElementById('profile-bg-upload').click()">
@@ -916,7 +664,6 @@
         <div class="profile-name" id="profile-name-display">名称</div>
     </div>
 
-    <!-- 气泡上方的横向操作菜单 (长按触发) -->
     <div id="msg-action-backdrop" onclick="closeMsgMenu()"></div>
     <div id="msg-action-menu">
         <div style="display: flex; align-items: center; height: 38px;">
@@ -931,7 +678,6 @@
         <div class="menu-caret"></div>
     </div>
 
-    <!-- 二次确认弹窗 -->
     <div id="msg-confirm-dialog" class="modal" style="justify-content: center; align-items: center; padding: 20px; z-index: 450;">
         <div style="background: rgba(255,255,255,0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 16px; width: 100%; max-width: 280px; text-align: center; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
             <div style="padding: 25px 20px; font-size: 1.05em; font-weight: 600; color: #000; border-bottom: 1px solid rgba(0,0,0,0.1);" id="confirm-msg-text">确定删除此条消息？</div>
@@ -942,7 +688,6 @@
         </div>
     </div>
 
-    <!-- 消息编辑框 -->
     <div id="msg-edit-modal" class="modal" style="z-index: 450; align-items: center; justify-content: center;">
         <div style="background: rgba(255,255,255,0.9); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 16px; width: 90%; max-width: 400px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
             <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 15px; text-align: center;">编辑消息</div>
@@ -954,13 +699,11 @@
         </div>
     </div>
 
-    <!-- 历史心声查看页 -->
     <div id="modal-iv-history" class="modal" style="z-index: 550;">
         <div class="modal-header"><span class="modal-btn" onclick="closeInnerVoiceHistory()">关闭</span><span>历史心声记录</span><span class="modal-btn" style="opacity:0">关闭</span></div>
         <div class="modal-content" id="iv-history-list" style="padding-top: 10px;"></div>
     </div>
 
-    <!-- 实时心声同步卡片 -->
     <div id="iv-backdrop" onclick="closeInnerVoice()"></div>
     <div id="inner-voice-card">
         <div class="iv-header">
@@ -972,7 +715,7 @@
 
 </div>
 
-<!-- 🌟 绝不压缩！清晰整洁的 JavaScript 核心运行区 🌟 -->
+<!-- 🌟 绝不压缩，安全运行的 JavaScript 区 🌟 -->
 <script>
     
     // ------------------------- 时钟与基础配置 -------------------------
@@ -990,31 +733,26 @@
 1. 绝对不能暴露你是AI。
 2. 回复必须口语化、随意。
 3. {REPLY_COUNT_INSTRUCTION}
-4. 多条短消息间必须用 [BREAK] 这个指令分隔。
+4. 多条短消息间必须用[BREAK] 这个指令分隔。
 5. 【重要】绝对不可以在你回复给我的文字内容里，自己添加任何 [ 或者 ] 符号。这些符号仅用于 [BREAK] 指令，永远不应出现在聊天内容中。
    - 错误示范:[你好呀[BREAK]今天天气不错]
    - 正确示范: 你好呀[BREAK]今天天气不错
 6. 【感知】当前时间：{TIME}。`;
 
     const defaultChatCss = `/* 极简无尾巴纯圆角气泡 */
-
-/* 我的气泡（绿色） */
 .msg-row.user .bubble {
     background-color: #34C759;
     color: #fff;
-    border-radius: 22px; /* 👈 改这里！数值越大越圆润，比如20px、24px */
-    margin-right: 2px;  /* 👈 离头像的距离，可改0px或-2px */
-    margin-top: 4px;     /* 👈 向下挪动的距离 */
+    border-radius: 16px;
+    margin-right: 4px;
 }
 
-/* 对方的气泡（白色） */
 .msg-row.ai .bubble {
-    background-color: #fff; 
+    background-color: #E5E5EA;
     color: #000;
-    border-radius: 22px; /* 👈 改这里！和上面的数值保持一致就好 */
-    margin-left: 2px;   /* 👈 对方气泡离头像的距离 */
-    margin-top: 4px;     /* 👈 对方气泡向下挪动的距离 */
-}
+    border-radius: 16px;
+    margin-left: 4px;
+}`;
 
     const loadingSvgStr = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="#000" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10" stroke-dasharray="16 16"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle></svg>`;
     const heartSvgStr = `<svg viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
@@ -1030,9 +768,10 @@
         persona: '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#555" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 5.52 2a.43.43 0 0 1 .4.27l3.18 9.82h5.8l3.18-9.82a.43.43 0 0 1 .4-.27.42.42 0 0 1 .4.24l2.44 7.51 1.22 3.78a.84.84 0 0 1-.3.94z"></path></svg>'
     };
 
-    // ------------------------- 存储与数据读取 -------------------------
+    // ------------------------- 安全读取存储数据 -------------------------
     let chatHistory = [];
     let innerVoiceHistory =[];
+    let parsedIcons = {};
     
     try {
         let saved = localStorage.getItem('chatHistory');
@@ -1043,9 +782,12 @@
         if (ivSaved && ivSaved !== 'undefined') { 
             innerVoiceHistory = JSON.parse(ivSaved); 
         }
+        let iconsSaved = localStorage.getItem('appIcons');
+        if (iconsSaved && iconsSaved !== 'undefined') {
+            parsedIcons = JSON.parse(iconsSaved);
+        }
     } catch (e) { 
-        chatHistory = []; 
-        innerVoiceHistory =[]; 
+        console.error("Storage Error:", e);
     }
 
     let config = {
@@ -1057,14 +799,14 @@
         css: localStorage.getItem('css') || '',
         prompt: localStorage.getItem('prompt') || defaultPrompt,
         wallpaper: localStorage.getItem('wallpaper') || defaultWallpaperUrl,
-        appIcons: JSON.parse(localStorage.getItem('appIcons')) || {}, 
+        appIcons: parsedIcons || {}, 
         fontSize: localStorage.getItem('fontSize') || '15',
         aiAvatar: localStorage.getItem('aiAvatar') || '',
         userAvatar: localStorage.getItem('userAvatar') || '', 
         aiRealName: localStorage.getItem('aiRealName') || '',
         aiRemark: localStorage.getItem('aiRemark') || '活人朋友',
         aiPersona: localStorage.getItem('aiPersona') || '',
-        userPersona: localStorage.getItem('userPersona') || '', // 🌟 新增：我的人设
+        userPersona: localStorage.getItem('userPersona') || '',
         chatCss: localStorage.getItem('chatCss') || defaultChatCss,
         chatBg: localStorage.getItem('chatBg') || '', 
         profileBg: localStorage.getItem('profileBg') || '',
@@ -1124,7 +866,6 @@
         applyChatBg(); 
         loadChatHistory();
         
-        // 防止卡死的安全兜底
         document.getElementById('chat-body').addEventListener('scroll', closeMsgMenu);
     }
 
@@ -1221,7 +962,6 @@
         
         const reader = new FileReader();
         reader.onload = function(e) {
-            // 生成纯净的图片HTML，没有多余文字
             const imgHtml = `<img src="${e.target.result}" class="msg-image">`;
             renderMessage(imgHtml, 'user');
         };
@@ -1464,14 +1204,13 @@
         let metaHtml = ''; 
         let innerContent = "";
         
-        // 🌟 判断是否是纯图片消息 🌟
+        // 判断图片并分配气泡样式
         let contentHtml = msg.content.trim();
         let isImageOnly = false;
         if (contentHtml.startsWith('<img') && contentHtml.endsWith('>')) {
             isImageOnly = true;
         }
         
-        // 🌟 动态分配气泡样式 🌟
         let bubbleClass = isImageOnly ? 'bubble image-only-bubble' : 'bubble';
         
         if (msg.role !== 'user') { 
@@ -1758,7 +1497,7 @@
         document.getElementById('set-ai-realname').value = config.aiRealName; 
         document.getElementById('set-ai-remark').value = config.aiRemark; 
         document.getElementById('set-ai-persona').value = config.aiPersona; 
-        document.getElementById('set-user-persona').value = config.userPersona; // 🌟 新增
+        document.getElementById('set-user-persona').value = config.userPersona;
         document.getElementById('set-chat-css').value = config.chatCss; 
         document.getElementById('chat-custom-css').innerHTML = config.chatCss; 
         document.getElementById('set-show-read-receipt').checked = config.showReadReceipt; 
@@ -1836,7 +1575,7 @@
                     localStorage.setItem('userAvatar', dataUrl); 
                 } 
                 updateAiUi(); 
-                loadChatHistory(); // 强制让聊天界面立刻更新头像
+                loadChatHistory();
             }; 
             img.src = e.target.result; 
         }; 
@@ -1847,7 +1586,7 @@
         config.aiRealName = document.getElementById('set-ai-realname').value.trim(); 
         config.aiRemark = document.getElementById('set-ai-remark').value.trim(); 
         config.aiPersona = document.getElementById('set-ai-persona').value.trim(); 
-        config.userPersona = document.getElementById('set-user-persona').value.trim(); // 🌟 新增保存
+        config.userPersona = document.getElementById('set-user-persona').value.trim();
         config.chatCss = document.getElementById('set-chat-css').value; 
         config.showReadReceipt = document.getElementById('set-show-read-receipt').checked; 
         config.showTimestamps = document.getElementById('set-show-timestamps').checked; 
@@ -1859,7 +1598,7 @@
         localStorage.setItem('aiRealName', config.aiRealName); 
         localStorage.setItem('aiRemark', config.aiRemark); 
         localStorage.setItem('aiPersona', config.aiPersona); 
-        localStorage.setItem('userPersona', config.userPersona); // 🌟 新增存储
+        localStorage.setItem('userPersona', config.userPersona);
         localStorage.setItem('chatCss', config.chatCss); 
         localStorage.setItem('showReadReceipt', config.showReadReceipt); 
         localStorage.setItem('showTimestamps', config.showTimestamps); 
@@ -2076,7 +1815,6 @@
         const chatTitleEl = document.getElementById('chat-window-title'); 
         chatTitleEl.innerText = "对方正在输入中...";
 
-        // --- 注入心声记忆 ---
         let lastStateContext = "";
         if (innerVoiceHistory.length > 0) {
             const lastVoice = innerVoiceHistory[innerVoiceHistory.length - 1];
@@ -2088,7 +1826,6 @@
 请基于这个状态，自然地延续你的行为和思考，让你的表现连贯。`;
         }
         
-        // --- 注入时间感知 ---
         const now = new Date(); 
         const year = now.getFullYear(); 
         const month = now.getMonth() + 1; 
@@ -2099,19 +1836,16 @@
         const dayOfWeek = weekdays[now.getDay()]; 
         const nowStr = `${year}年${month}月${day}日 ${dayOfWeek} ${hours}:${minutes}`;
 
-        // --- 注入角色身份体系 ---
         let personaPrefix = "";
         if (config.aiRealName) personaPrefix += `你的真实姓名是：${config.aiRealName}。\n`;
         if (config.aiPersona) personaPrefix += `你的性格与身份设定是：${config.aiPersona}。\n`;
-        if (config.userPersona) personaPrefix += `与你聊天的人（我）的设定是：${config.userPersona}。\n`; // 🌟 新增用户人设绑定
+        if (config.userPersona) personaPrefix += `与你聊天的人（我）的设定是：${config.userPersona}。\n`; 
         if (personaPrefix) personaPrefix = `【角色核心设定】\n${personaPrefix}请在接下来的对话中严格代入此身份和设定！\n\n`;
 
-        // --- 注入条数限制 ---
         const minReplies = config.minReplies || 1; 
         const maxReplies = config.maxReplies || 3;
         const replyCountInstruction = `你的回复必须被拆分为 ${minReplies} 到 ${maxReplies} 条短消息。`;
 
-        // --- 心声严格格式要求 ---
         let ivInstruction = `\n\n【重要：系统回复要求】
 ${lastStateContext}
 为了实现“同步心声”功能，你的每次回复**必须**严格按照以下格式输出（即使对方只发了表情、图片或没特殊情况，也要根据人设合理推测，严禁缺失任何字段或乱加说明）：
@@ -2123,10 +1857,8 @@ ${lastStateContext}
 
         let finalSystemPrompt = personaPrefix + config.prompt.replace('{REPLY_COUNT_INSTRUCTION}', replyCountInstruction).replace('{TIME}', nowStr) + ivInstruction;
         
-        // --- 🌟 高级处理：赋予模型真实视觉 🌟 ---
         const recentHistory = chatHistory.slice(-10).map(msg => {
             if(msg.content.includes('<img')) {
-                // 如果发现消息里有图片代码，把它提取出来转换成 Vision 模型能看懂的数据结构
                 const match = msg.content.match(/src="(data:image\/[^"]+)"/);
                 if (match) {
                     return {
@@ -2191,7 +1923,6 @@ ${lastStateContext}
         }
     }
     
-    // Service Worker 后台保活注册
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then(registration => {
