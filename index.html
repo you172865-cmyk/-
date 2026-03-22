@@ -1565,9 +1565,16 @@
         const chatTitleEl = document.getElementById('chat-window-title');
         chatTitleEl.innerText = "对方正在输入中...";
 
-        const now = new Date(); 
-        const nowStr = `${now.getMonth() + 1}月${now.getDate()}日 ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        
+        const now = new Date();
+const year = now.getFullYear();
+const month = now.getMonth() + 1;
+const day = now.getDate();
+const hours = String(now.getHours()).padStart(2, '0');
+const minutes = String(now.getMinutes()).padStart(2, '0');
+const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+const dayOfWeek = weekdays[now.getDay()];
+
+const nowStr = `${year}年${month}月${day}日 ${dayOfWeek} ${hours}:${minutes}`;
         let personaPrefix = "";
         if (config.aiRealName) personaPrefix += `你的真实姓名是：${config.aiRealName}。\n`;
         if (config.aiPersona) personaPrefix += `你的性格与身份设定是：${config.aiPersona}。\n`;
