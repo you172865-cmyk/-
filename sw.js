@@ -1,7 +1,7 @@
 // sw.js 文件
 
 // 定义缓存的名字，每次更新应用时，最好修改一下这个版本号
-const CACHE_NAME = 'rourouji-cache-v7'; 
+const CACHE_NAME = 'rourouji-cache-v8'; 
 
 // 定义需要被缓存的核心文件列表
 const urlsToCache = [
