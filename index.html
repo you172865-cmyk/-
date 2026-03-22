@@ -1624,6 +1624,31 @@
             chatTitleEl.innerText = config.aiRemark || '未命名朋友';
         }
     }
+    <!-- ... 你原来的所有代码 ... -->
+
+    /* ... 你原来script标签里的所有JS代码 ... */
+    
+    // ===============================================================
+    // 在这里粘贴下面的新代码
+    // ===============================================================
+
+    // 注册 Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }).catch(err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+
+    // ===============================================================
+    // 新代码结束
+    // ===============================================================
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
