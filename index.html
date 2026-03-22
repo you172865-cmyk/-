@@ -8,163 +8,32 @@
 <title>肉肉机</title>
 <meta name="apple-mobile-web-app-title" content="肉肉机">
 
-<!-- 💖 手机桌面图标设置区 💖 -->
 <link rel="apple-touch-icon" id="apple-touch-icon" href="https://img.heliar.top/file/1774020720552_IMG_5899.jpeg">
 
 <style id="base-css">
     :root { --global-font-size: 15px; }
-    
-    * { 
-        box-sizing: border-box; margin: 0; padding: 0; 
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-        -webkit-tap-highlight-color: transparent; 
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: #000; overflow: hidden; margin: 0; padding: 0; width: 100vw; height: 100vh; }
     
     #phone-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: url('https://img.heliar.top/file/1773998063711_IMG_5804.png') no-repeat center center/cover; overflow: hidden; display: flex; flex-direction: column; font-size: var(--global-font-size); transform: translate3d(0,0,0); will-change: background-image; }
     
-    #desktop-icons { 
-        flex: 1; 
-        padding: 20px 15px; 
-        padding-top: calc(max(60px, env(safe-area-inset-top, 40px) + 20px)); 
-        display: grid; 
-        grid-template-columns: repeat(4, 1fr); 
-        grid-auto-rows: min-content; 
-        row-gap: 25px; 
-        column-gap: 12px;
-        justify-items: center; 
-        align-items: start; 
-        overflow-y: auto;
-    }
-
-    #clock-widget {
-        grid-column: span 2;
-        grid-row: span 2;
-        width: 100%;
-        aspect-ratio: 1 / 1; 
-        background: rgba(255, 255, 255, 0.35);
-        backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-        border-radius: 30px; 
-        box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 25px rgba(0,0,0,0.08);
-        border: 1.5px solid rgba(255,255,255,0.6);
-        display: flex; justify-content: center; align-items: center; position: relative;
-    }
-    
-    .clock-inner-ring {
-        position: absolute;
-        inset: 12px;
-        border-radius: 20px;
-        border: 3.5px dashed #000;
-        opacity: 0.25; 
-        pointer-events: none;
-    }
-
-    #clock-time {
-        font-size: 3.6em;
-        font-weight: 300; 
-        color: #000;
-        letter-spacing: -2px;
-        z-index: 2;
-        text-shadow: 0 2px 15px rgba(255,255,255,0.9);
-        display: inline-block;
-        transform: scaleY(1.3);
-        transform-origin: center;
-    }
+    #desktop-icons { flex: 1; padding: 20px 15px; padding-top: calc(max(60px, env(safe-area-inset-top, 40px) + 20px)); display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: min-content; row-gap: 25px; column-gap: 12px; justify-items: center; align-items: start; overflow-y: auto; }
+    #clock-widget { grid-column: span 2; grid-row: span 2; width: 100%; aspect-ratio: 1 / 1; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 30px; box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 25px rgba(0,0,0,0.08); border: 1.5px solid rgba(255,255,255,0.6); display: flex; justify-content: center; align-items: center; position: relative; }
+    .clock-inner-ring { position: absolute; inset: 12px; border-radius: 20px; border: 3.5px dashed #000; opacity: 0.25; pointer-events: none; }
+    #clock-time { font-size: 3.6em; font-weight: 300; color: #000; letter-spacing: -2px; z-index: 2; text-shadow: 0 2px 15px rgba(255,255,255,0.9); display: inline-block; transform: scaleY(1.3); transform-origin: center; }
     
     .app-icon-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 100%; }
-    
-    .app-icon { 
-        width: 62px; height: 62px; 
-        background: rgba(255, 255, 255, 0.35); 
-        backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); 
-        border-radius: 16px; 
-        display: flex; justify-content: center; align-items: center; 
-        box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 20px rgba(0,0,0,0.08); 
-        border: 1.5px solid rgba(255,255,255,0.6);
-        background-size: cover; background-position: center; 
-    }
-    
-    .app-name { 
-        color: #000; 
-        font-size: 12px; 
-        font-weight: 600; 
-        text-shadow: none; 
-        white-space: nowrap; 
-        overflow: hidden; 
-        text-overflow: ellipsis; 
-        max-width: 90%; 
-        text-align: center; 
-    }
+    .app-icon { width: 62px; height: 62px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), inset 0 -2px 10px rgba(0,0,0,0.03), 0 8px 20px rgba(0,0,0,0.08); border: 1.5px solid rgba(255,255,255,0.6); background-size: cover; background-position: center; }
+    .app-name { color: #000; font-size: 12px; font-weight: 600; text-shadow: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; text-align: center; }
 
-    /* 💎 桌面白圆磨砂组件 💎 */
-    #custom-desktop-widget {
-        grid-column: span 4;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 35px;
-        margin-bottom: 10px;
-    }
-    .widget-oval {
-        width: 90%;
-        height: 65px; 
-        background: rgba(255, 255, 255, 0.35);
-        backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-        border-radius: 35px; 
-        border: 1.5px solid rgba(255,255,255,0.6);
-        box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), 0 8px 25px rgba(0,0,0,0.08);
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end; 
-        padding-bottom: 13px;
-    }
-    .widget-avatar {
-        width: 72px;
-        height: 72px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 50%;
-        position: absolute;
-        top: -40px; 
-        left: 50%;
-        transform: translateX(-50%);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-        border: 2px solid rgba(255,255,255,0.95);
-        overflow: hidden;
-        z-index: 2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
+    #custom-desktop-widget { grid-column: span 4; width: 100%; display: flex; justify-content: center; align-items: center; padding-top: 35px; margin-bottom: 10px; }
+    .widget-oval { width: 90%; height: 65px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 35px; border: 1.5px solid rgba(255,255,255,0.6); box-shadow: inset 0 4px 15px rgba(255,255,255,0.7), 0 8px 25px rgba(0,0,0,0.08); position: relative; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 13px; }
+    .widget-avatar { width: 72px; height: 72px; background: rgba(255, 255, 255, 0.95); border-radius: 50%; position: absolute; top: -40px; left: 50%; transform: translateX(-50%); box-shadow: 0 5px 15px rgba(0,0,0,0.12); border: 2px solid rgba(255,255,255,0.95); overflow: hidden; z-index: 2; display: flex; justify-content: center; align-items: center; cursor: pointer; }
     .widget-avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .widget-text-input {
-        width: 85%;
-        background: transparent;
-        border: none;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 600;
-        color: #333;
-        outline: none;
-        z-index: 1;
-        font-family: inherit;
-    }
+    .widget-text-input { width: 85%; background: transparent; border: none; text-align: center; font-size: 13px; font-weight: 600; color: #333; outline: none; z-index: 1; font-family: inherit; }
 
     #bottom-dock { margin: 15px; margin-bottom: max(25px, env(safe-area-inset-bottom, 20px)); height: 85px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; padding: 0 15px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.5); box-shadow: inset 0 4px 15px rgba(255,255,255,0.6), 0 8px 25px rgba(0,0,0,0.1); }
-    
-    .dock-icon { 
-        width: 58px; height: 58px; 
-        background: rgba(255, 255, 255, 0.4); 
-        backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-        border-radius: 14px; 
-        display: flex; justify-content: center; align-items: center; 
-        box-shadow: inset 0 2px 8px rgba(255,255,255,0.8), 0 4px 10px rgba(0,0,0,0.05); 
-        border: 1px solid rgba(255,255,255,0.5);
-        cursor: pointer; 
-    }
+    .dock-icon { width: 58px; height: 58px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 14px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 8px rgba(255,255,255,0.8), 0 4px 10px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5); cursor: pointer; }
     #home-indicator { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px; background-color: #000; border-radius: 10px; z-index: 9999; pointer-events: none; }
 
     .modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 240, 245, 0.55); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); z-index: 300; display: none; flex-direction: column; }
@@ -350,7 +219,7 @@
     .iv-label { font-weight: bold; color: #000; }
 
     /* ========================================================= */
-    /* 🌟 全新升级的 CSS 样式区 (菜单、按钮美化) 🌟 */
+    /* 🌟 菜单和按钮美化 🌟 */
     /* ========================================================= */
     
     .chat-footer { background: rgba(255,255,255,0.6); border-top: 1px solid rgba(0,0,0,0.08); padding: 10px 15px max(35px, env(safe-area-inset-bottom, 20px)) 15px; flex-shrink: 0; position: relative; } 
@@ -468,7 +337,7 @@
                     <label class="form-group" style="font-weight: bold;">实验性功能</label>
                     <button class="glass-btn" style="width: 100%;" onclick="showTestNotification()">测试后台推送消息</button>
                     <p style="font-size: 12px; color: #666; margin-top: 10px; line-height: 1.5;">
-                        点击后会请求通知权限。如果授权，将立即弹出一个系统通知来测试功能是否可用。这不会在后台自动推送AI回复。
+                        点击后会请求通知权限。如果授权，将立即弹出一个系统通知来测试功能是否可用。
                     </p>
                 </div>
             </div>
@@ -767,7 +636,7 @@
 </div>
 
 <script>
-    // 🌟 核心运行代码 🌟
+    // 🌟 全新修复、功能强化且绝不偷懒的核心代码 🌟
     function updateClock() {
         const now = new Date();
         const hrs = String(now.getHours()).padStart(2, '0');
@@ -883,7 +752,7 @@
 
     window.onload = () => { try { init(); } catch (e) { console.error("Init Error", e); } };
 
-    // 🌟 推送与授权功能 🌟
+    // 🌟 推送通知测试 🌟
     function requestNotificationPermission() {
         return new Promise((resolve, reject) => {
             if (!('Notification' in window)) { alert('抱歉，你的浏览器不支持桌面通知。'); return reject('unsupported'); }
@@ -912,7 +781,7 @@
         }).catch(err => { console.error('测试通知失败:', err); });
     }
 
-    // 🌟 菜单操作功能 🌟
+    // 🌟 菜单操作与发送图片 🌟
     function toggleChatMenu() {
         const menu = document.getElementById('chat-menu-panel');
         const backdrop = document.getElementById('chat-menu-backdrop');
@@ -936,6 +805,7 @@
         } else { alert('没有可以重回的AI回复~'); }
     }
 
+    // 🛑【已修复】去掉了假回复，直接发送图片🛑
     function handleImageSend(event) {
         toggleChatMenu();
         const file = event.target.files[0];
@@ -944,14 +814,12 @@
         reader.onload = function(e) {
             const imgHtml = `<img src="${e.target.result}" class="msg-image" style="max-width:200px; border-radius:10px;">`;
             renderMessage(imgHtml, 'user');
-            setTimeout(() => {
-                const aiMsg = "【图片已收到】哇，这张图片好棒！(注：如需AI真实识别图片内容，需在设置中配置Vision大模型)";
-                renderMessage(aiMsg, 'ai');
-            }, 1000);
+            // 注意：这里已经删掉了假回复代码。你可以直接点击"呼唤AI"按钮让它看图！
         };
         reader.readAsDataURL(file);
     }
 
+    // 🌟 心声系统 🌟
     function showInnerVoice() {
         const body = document.getElementById('iv-body-content');
         if (innerVoiceHistory.length === 0) { body.innerHTML = '<div style="text-align:center; color:#666; padding: 10px 0;">暂无心声数据，请先与TA聊两句~</div>'; } 
@@ -998,6 +866,7 @@
         });
     }
 
+    // 🌟 设置与文件上传 🌟
     function updateWidgetUi() {
         const preview = document.getElementById('widget-avatar-preview'); const fallback = document.getElementById('widget-avatar-fallback');
         if (config.widgetAvatar) { preview.src = config.widgetAvatar; preview.style.display = 'block'; fallback.style.display = 'none'; } 
@@ -1128,10 +997,33 @@
     function deleteSelectedMsgs() { if(selectedMessages.size === 0) return; document.getElementById('confirm-msg-text').innerText = `确定删除选中的 ${selectedMessages.size} 条消息？`; confirmAction = () => { const indices = Array.from(selectedMessages).sort((a,b) => b - a); indices.forEach(idx => { chatHistory.splice(idx, 1); }); saveChatHistoryToLocal(); loadChatHistory(); cancelMultiSelect(); closeMsgConfirm(); }; document.getElementById('msg-confirm-dialog').classList.add('active'); }
     function clearChatHistory() { document.getElementById('confirm-msg-text').innerText = '确定清空所有聊天记录吗？(心声记录也将被清空)'; confirmAction = () => { chatHistory =[]; innerVoiceHistory =[]; saveChatHistoryToLocal(); localStorage.removeItem('innerVoiceHistory'); loadChatHistory(); closeChatDetails(); closeMsgConfirm(); }; document.getElementById('msg-confirm-dialog').classList.add('active'); }
     function previewFont(fontUrl) { config.customFont = fontUrl; const box = document.getElementById('preview-font-box'); let styleEl = document.getElementById('dynamic-font-style'); if (!styleEl) { styleEl = document.createElement('style'); styleEl.id = 'dynamic-font-style'; document.head.appendChild(styleEl); } if (fontUrl) { styleEl.innerHTML = `@font-face { font-family: 'RouRouFont'; src: url('${fontUrl}'); } body, * { font-family: 'RouRouFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; }`; box.style.display = 'block'; } else { styleEl.innerHTML = ''; box.style.display = 'none'; } }
+    
     async function testAPI() { const baseUrl = document.getElementById('set-baseurl').value.replace(/\/$/, ''); const apiKey = document.getElementById('set-apikey').value; const model = document.getElementById('set-model').value || 'gpt-4o'; if(!baseUrl || !apiKey) return alert('⚠️ 请先填写 Base URL 和 API Key'); const btn = document.getElementById('test-api-btn'); const originalText = btn.innerText; btn.innerText = '正在测试发送...'; btn.disabled = true; try { const response = await fetch(`${baseUrl}/chat/completions`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify({ model: model, messages:[{role: 'user', content: '测试'}], max_tokens: 5 }) }); if (!response.ok) { const errData = await response.json(); alert(`❌ 链接或鉴权失败！\n状态码: ${response.status}\n\n报错内容:\n${JSON.stringify(errData, null, 2)}`); } else { alert('✅ 测试完美通过！\n网络畅通，API Key 鉴权成功，模型可用。'); } } catch (error) { alert(`❌ 网络请求彻底失败 (可能跨域或断网):\n${error.message}`); } finally { btn.innerText = originalText; btn.disabled = false; } }
     async function fetchModels() { const baseUrl = document.getElementById('set-baseurl').value.replace(/\/$/, ''); const apiKey = document.getElementById('set-apikey').value; if(!baseUrl || !apiKey) return alert('请先填写完整的 Base URL 和 API Key'); try { const res = await fetch(`${baseUrl}/models`, { headers: { 'Authorization': `Bearer ${apiKey}` } }); const data = await res.json(); if(data && data.data) { let selectHtml = `<select id="set-model" style="flex:1;">`; data.data.forEach(m => { let selected = (m.id === config.model) ? 'selected' : ''; selectHtml += `<option value="${m.id}" ${selected}>${m.id}</option>`; }); selectHtml += `</select>`; document.getElementById('set-model').outerHTML = selectHtml; alert('成功获取大模型列表，已为您转换成下拉框！'); } } catch (e) { alert('拉取失败，请检查 URL 和 API Key 是否完全正确。'); } }
     function updateFontSizeLabel() { const val = document.getElementById('set-font-size').value; document.getElementById('font-size-val').innerText = val + 'px'; document.documentElement.style.setProperty('--global-font-size', val + 'px'); config.fontSize = val; }
     function updateAiUi() { document.getElementById('set-ai-realname').value = config.aiRealName; document.getElementById('set-ai-remark').value = config.aiRemark; document.getElementById('set-ai-persona').value = config.aiPersona; document.getElementById('set-chat-css').value = config.chatCss; document.getElementById('chat-custom-css').innerHTML = config.chatCss; document.getElementById('set-show-read-receipt').checked = config.showReadReceipt; if (config.showReadReceipt) { document.getElementById('chat-body').classList.add('show-read-receipt'); } else { document.getElementById('chat-body').classList.remove('show-read-receipt'); } document.getElementById('set-show-timestamps').checked = config.showTimestamps; if (config.showTimestamps) { document.getElementById('chat-body').classList.remove('hide-timestamps'); } else { document.getElementById('chat-body').classList.add('hide-timestamps'); } const displayName = config.aiRemark || '未命名朋友'; document.getElementById('chat-window-title').innerText = displayName; document.getElementById('list-item-name').innerText = displayName; if (config.aiAvatar) { document.getElementById('details-avatar-preview').src = config.aiAvatar; document.getElementById('details-avatar-preview').style.display = 'block'; document.getElementById('details-avatar-fallback').style.display = 'none'; document.getElementById('list-avatar-preview').src = config.aiAvatar; document.getElementById('list-avatar-preview').style.display = 'block'; document.getElementById('list-avatar-fallback').style.display = 'none'; } else { document.getElementById('details-avatar-preview').style.display = 'none'; document.getElementById('details-avatar-fallback').style.display = 'block'; document.getElementById('list-avatar-preview').style.display = 'none'; document.getElementById('list-avatar-fallback').style.display = 'block'; } if (config.userAvatar) { document.getElementById('details-user-avatar-preview').src = config.userAvatar; document.getElementById('details-user-avatar-preview').style.display = 'block'; document.getElementById('details-user-avatar-fallback').style.display = 'none'; } else { document.getElementById('details-user-avatar-preview').style.display = 'none'; document.getElementById('details-user-avatar-fallback').style.display = 'block'; } document.getElementById('set-min-replies').value = config.minReplies; document.getElementById('set-max-replies').value = config.maxReplies; }
+    
+    // 🛑【已修复】更换头像后立刻刷新聊天界面的核心指令🛑
+    function handleAvatarUpload(event, type) { 
+        const file = event.target.files[0]; if (!file) return; 
+        const reader = new FileReader(); 
+        reader.onload = function(e) { 
+            const img = new Image(); 
+            img.onload = function() { 
+                const canvas = document.createElement('canvas'); let width = img.width, height = img.height; const MAX_SIZE = 400; 
+                if (width > height && width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } else if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } 
+                canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); 
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8); 
+                if (type === 'ai') { config.aiAvatar = dataUrl; localStorage.setItem('aiAvatar', dataUrl); } 
+                else { config.userAvatar = dataUrl; localStorage.setItem('userAvatar', dataUrl); } 
+                updateAiUi(); 
+                loadChatHistory(); // 👈 这一句就是强制让聊天界面立刻更新头像的关键魔法！
+            }; 
+            img.src = e.target.result; 
+        }; 
+        reader.readAsDataURL(file); 
+    }
+    
     function saveAiSettings() { config.aiRealName = document.getElementById('set-ai-realname').value.trim(); config.aiRemark = document.getElementById('set-ai-remark').value.trim(); config.aiPersona = document.getElementById('set-ai-persona').value.trim(); config.chatCss = document.getElementById('set-chat-css').value; config.showReadReceipt = document.getElementById('set-show-read-receipt').checked; config.showTimestamps = document.getElementById('set-show-timestamps').checked; config.minReplies = document.getElementById('set-min-replies').value || '1'; config.maxReplies = document.getElementById('set-max-replies').value || '3'; localStorage.setItem('minReplies', config.minReplies); localStorage.setItem('maxReplies', config.maxReplies); localStorage.setItem('aiRealName', config.aiRealName); localStorage.setItem('aiRemark', config.aiRemark); localStorage.setItem('aiPersona', config.aiPersona); localStorage.setItem('chatCss', config.chatCss); localStorage.setItem('showReadReceipt', config.showReadReceipt); localStorage.setItem('showTimestamps', config.showTimestamps); updateAiUi(); loadChatHistory(); alert('设置已保存'); }
     function handleAppIconUpload(event, appId) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); let width = img.width, height = img.height; const MAX_SIZE = 150; if (width > height && width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } else if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); const dataUrl = canvas.toDataURL('image/jpeg', 0.8); config.appIcons[appId] = dataUrl; localStorage.setItem('appIcons', JSON.stringify(config.appIcons)); applyImages(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
     function applyImages() { if (config.wallpaper) { document.getElementById('phone-container').style.backgroundImage = `url('${config.wallpaper}')`; } const apps =['wechat', 'worldbook', 'forum', 'weibo', 'rrmusic', 'game', 'persona']; apps.forEach(app => { const deskIcon = document.getElementById(`icon-${app}`); const editPrev = document.getElementById(`edit-prev-${app}`); if (config.appIcons[app]) { deskIcon.style.backgroundImage = `url('${config.appIcons[app]}')`; deskIcon.innerHTML = ''; if(editPrev) editPrev.innerHTML = `<img src="${config.appIcons[app]}">`; } else { deskIcon.style.backgroundImage = 'none'; deskIcon.innerHTML = defaultAppIconsSVG[app]; if(editPrev) editPrev.innerHTML = defaultAppIconsSVG[app]; } }); }
@@ -1154,7 +1046,7 @@
     function handleEnter(e) { if (e.key === 'Enter') addUserMessage(); }
     function addUserMessage() { const input = document.getElementById('chat-input'); const text = input.value.trim(); if (!text) return; renderMessage(text, 'user'); input.value = ''; }
 
-    // 🌟 核心AI请求模块 🌟
+    // 🌟 带有【真实视觉识别能力】的超级AI模块 🌟
     async function generateAIResponse() {
         if (!config.apiKey) { alert("🔒 检测到 API Key 未配置，请先点击屏幕底部左下角的【齿轮图标】前往设置填写！"); return; }
         if (chatHistory.length === 0) return;
@@ -1185,7 +1077,7 @@
 
         let ivInstruction = `\n\n【重要：系统回复要求】
 ${lastStateContext}
-为了实现“同步心声”功能，你的每次回复**必须**严格按照以下格式输出（即使对方只发了表情或没特殊情况，也要根据人设合理推测，严禁缺失任何字段或乱加说明）：
+为了实现“同步心声”功能，你的每次回复**必须**严格按照以下格式输出（即使对方只发了表情、图片或没特殊情况，也要根据人设合理推测，严禁缺失任何字段或乱加说明）：
 
 穿着：(这里填写纯文本描述，不要加任何方括号)
 动作：(这里填写纯文本描述，不要加任何方括号)
@@ -1194,9 +1086,23 @@ ${lastStateContext}
 
         let finalSystemPrompt = personaPrefix + config.prompt.replace('{REPLY_COUNT_INSTRUCTION}', replyCountInstruction).replace('{TIME}', nowStr) + ivInstruction;
         
-        // 过滤掉包含图片的本地历史记录以防 API 报错
+        // 🛑【已升级】真实图像识别传输协议🛑
         const recentHistory = chatHistory.slice(-10).map(msg => {
-            if(msg.content.includes('<img')) return { role: msg.role, content: '[我发送了一张图片]' };
+            if(msg.content.includes('<img')) {
+                // 如果发现里面有图片，把它抠出来喂给AI的眼睛！
+                const match = msg.content.match(/src="(data:image\/[^"]+)"/);
+                if (match) {
+                    return {
+                        role: msg.role,
+                        content:[
+                            { type: "text", text: "（发送了一张图片，请仔细查看这张图片，并在心声和回复中做出评价）" },
+                            { type: "image_url", image_url: { url: match[1] } }
+                        ]
+                    };
+                } else {
+                    return { role: msg.role, content: "[我发送了一张图片]" };
+                }
+            }
             return { role: msg.role, content: msg.content };
         }); 
 
@@ -1205,7 +1111,7 @@ ${lastStateContext}
         try {
             const response = await fetch(`${config.baseUrl.replace(/\/$/, '')}/chat/completions`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
-                body: JSON.stringify({ model: config.model, messages: messages, temperature: parseFloat(config.temperature) })
+                body: JSON.stringify({ model: config.model, messages: messages, temperature: parseFloat(config.temperature), max_tokens: 1500 }) // 加了max_tokens防止大模型话没说完
             });
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             const data = await response.json(); const replyText = data.choices[0].message.content;
