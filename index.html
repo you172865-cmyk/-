@@ -254,6 +254,7 @@
     .profile-bg-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.7); font-size: 0.85em; text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: none; }
     .profile-avatar-wrapper { position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 85px; height: 85px; border-radius: 50%; border: 3px solid #fff; background: #eee; overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: 2.2em; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .profile-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    #profile-avatar-fallback { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #ddd; color: #555; font-size: 0.8em; font-weight: bold; }
     .profile-name { margin-top: 50px; text-align: center; font-size: 1.3em; font-weight: 600; color: #000; }
 
     /* 世界书样式 */
@@ -315,7 +316,6 @@
     <div id="bottom-dock">
         <div class="dock-icon" onclick="openModal('modal-settings')"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#555" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
         <div class="dock-icon" onclick="openModal('modal-beautify')"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#555" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle></svg></div>
-        <div class="dock-icon" onclick="openModal('modal-presets')"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#555" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
     </div>
     <div id="home-indicator"></div>
 
@@ -387,15 +387,6 @@
                 </div>
             </div>
             <div class="form-group" style="margin-top:20px;"><label>全局自定义 CSS</label><textarea id="set-css"></textarea></div>
-            <button class="save-all-btn" onclick="saveSettings()">保存全部配置</button>
-        </div>
-    </div>
-
-    <!-- 预设与系统 Prompt 页 -->
-    <div id="modal-presets" class="modal scroll-container">
-        <div class="modal-header"><span class="modal-btn" onclick="closeModal('modal-presets')">取消</span><span>底层核心指令</span><span class="modal-btn" style="opacity:0">保存</span></div>
-        <div class="modal-content">
-            <div class="form-group"><label style="color:#007aff;">System Prompt (决定AI核心行为逻辑)</label><textarea id="set-prompt" style="height: 450px; font-size:12px;"></textarea></div>
             <button class="save-all-btn" onclick="saveSettings()">保存全部配置</button>
         </div>
     </div>
@@ -511,7 +502,6 @@
         <div class="modal-content">
             <input type="hidden" id="wb-edit-id">
             <div class="form-group"><label>标题 (简述)</label><input type="text" id="wb-edit-title" placeholder="如：修仙界境界划分"></div>
-            <div class="form-group"><label>触发条目 (多个用逗号隔开)</label><input type="text" id="wb-edit-keys" placeholder="如：境界,修炼,金丹"></div>
             <div class="form-group"><label>正文设定</label><textarea id="wb-edit-content" style="height: 150px;" placeholder="在此输入详细的背景设定内容..."></textarea></div>
             
             <div class="form-group">
@@ -705,7 +695,7 @@
     <div id="profile-page">
         <div class="profile-header-float"><div class="profile-back" onclick="closeProfile()">‹</div></div>
         <div class="profile-bg" id="profile-bg-display" onclick="document.getElementById('profile-bg-upload').click()">
-            <div class="profile-bg-hint">点击更换朋友圈背景</div>
+            <div class="profile-bg-hint">点击更换背景</div>
             <input type="file" id="profile-bg-upload" accept="image/*" style="display:none;" onchange="handleProfileBgUpload(event)">
             <div class="profile-avatar-wrapper" id="profile-avatar-bg">
                 <img id="profile-avatar-img" src="">
@@ -713,6 +703,10 @@
             </div>
         </div>
         <div class="profile-name" id="profile-name-display">名称</div>
+        <div class="profile-actions" style="display:flex; justify-content:center; gap:20px; margin-top:30px;">
+            <div id="profile-action-msg" class="glass-btn" style="width:120px; text-align:center; background:#07c160; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; box-shadow:0 4px 12px rgba(7,193,96,0.3);">发消息</div>
+            <div id="profile-action-call" class="glass-btn" style="width:120px; text-align:center; padding:12px; border-radius:8px; font-weight:bold; background:rgba(255,255,255,0.8);" onclick="showCuteAlert('音视频通话功能开发中...')">音/视频通话</div>
+        </div>
     </div>
 
     <!-- 气泡上方的横向操作菜单 (长按触发) -->
@@ -813,14 +807,17 @@
     setInterval(updateClock, 1000); updateClock();
 
     // 🌟 解决“活人感”的核心底层系统提示词 🌟
-    const defaultPrompt = `你现在扮演我的一个真实人类朋友，我们正在用微信聊天。
+    const SYSTEM_PROMPT = `你现在扮演我的一个真实人类朋友，我们正在用微信聊天。
 【核心铁律 - 绝不违背】
 1. 绝对不能暴露你是AI、语言模型或虚拟角色。禁用任何类似“作为一个AI”、“我无法感知”、“科普一下”等机械回复。
 2. 你是一个活生生的人，有情绪、有偏见、有盲区。拒绝像搜索引擎一样回答问题！如果你（作为该人设）不知道或不感兴趣，直接敷衍、反问、开玩笑或说“不知道啊”、“这啥”，绝不允许长篇大论科普！
 3. 回复必须极其口语化、随意。多用“啊、呢、吧、卧槽、哈哈、嗯”等语气词，符合现代网友微信聊天习惯。可以出现符合人设的错别字或语病。
 4. {REPLY_COUNT_INSTRUCTION} 根据对方的话题长度决定你的总回复长度。对方发几个字，你也发几个字。
-5. 多条短消息间必须用 [BREAK] 这个指令分隔。绝不能在回复正文里自己加 [] 符号。
-6. 【感知】当前时间：{TIME}。`;
+5. 多条短消息间必须用 [BREAK] 这个指令分隔。绝不能在回复正文里自己加[] 符号。
+6. 【感知】当前时间：{TIME}。你可以识别对方发来的图片，请仔细观察图片内容并作出自然反应。
+
+【换头像机制】
+如果你觉得对方发来的最新图片很好看，或者剧情需要你更换头像，你可以选择将对方发来的图片设置为自己的新头像。在回复的特定字段表明你的意愿。`;
 
     const defaultChatCss = `/* 我的气泡（绿色） */\n.msg-row.user .bubble {\n    background-color: #34C759;\n    color: #fff;\n    border-radius: 22px; \n    margin-right: 2px;  \n    margin-top: 4px;     \n}\n/* 对方的气泡（白色） */\n.msg-row.ai .bubble {\n    background-color: #fff; \n    color: #000;\n    border-radius: 22px; \n    margin-left: 2px;   \n    margin-top: 4px;     \n}`;
     const loadingSvgStr = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="#000" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10" stroke-dasharray="16 16"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle></svg>`;
@@ -844,7 +841,6 @@
         temperature: safeGetItem('temperature', '0.75'), 
         customFont: safeGetItem('customFont', ''),
         css: safeGetItem('css', ''),
-        prompt: safeGetItem('prompt', defaultPrompt),
         wallpaper: safeGetItem('wallpaper', defaultWallpaperUrl),
         appIcons: safeGetJSON('appIcons', {}), 
         fontSize: safeGetItem('fontSize', '15'),
@@ -855,7 +851,7 @@
     };
 
     // 🌟 多角色数据系统 🌟
-    let contacts = safeGetJSON('contacts', [{
+    let contacts = safeGetJSON('contacts',[{
         id: 'default_01',
         realName: safeGetItem('aiRealName', ''),
         remark: safeGetItem('aiRemark', '朋友'),
@@ -866,6 +862,7 @@
         userPersona: safeGetItem('userPersona', ''),
         chatCss: safeGetItem('chatCss', defaultChatCss),
         chatBg: safeGetItem('chatBg', ''),
+        profileBg: '',
         showReadReceipt: safeGetItem('showReadReceipt', 'false') === 'true',
         showTimestamps: safeGetItem('showTimestamps', 'true') !== 'false',
         minReplies: safeGetItem('minReplies', '1'),
@@ -883,7 +880,7 @@
         allChatHistories['default_01'] = oldHistory;
         try{ localStorage.removeItem('chatHistory'); }catch(e){}
     }
-    let chatHistory = allChatHistories[currentContactId] || [];
+    let chatHistory = allChatHistories[currentContactId] ||[];
 
     let allInnerVoices = safeGetJSON('allInnerVoices', {});
     let oldVoices = safeGetJSON('innerVoiceHistory', null);
@@ -891,16 +888,17 @@
         allInnerVoices['default_01'] = oldVoices;
         try{ localStorage.removeItem('innerVoiceHistory'); }catch(e){}
     }
-    let innerVoiceHistory = allInnerVoices[currentContactId] || [];
+    let innerVoiceHistory = allInnerVoices[currentContactId] ||[];
 
     // 🌟 世界书系统数据 🌟
-    let worldbooks = safeGetJSON('worldbooks', []);
+    let worldbooks = safeGetJSON('worldbooks',[]);
     let contactWorldbooks = safeGetJSON('contactWorldbooks', {}); // { contactId: [wbId1, wbId2] }
 
     let activeMsgIndex = -1;
     let isMultiSelectMode = false;
     let selectedMessages = new Set();
     let confirmAction = null;
+    let activeProfileId = null;
 
     let tempNewContactAvatar = '';
 
@@ -912,7 +910,6 @@
         document.getElementById('set-temperature').value = config.temperature;
         document.getElementById('temp-val').innerText = parseFloat(config.temperature).toFixed(2);
         document.getElementById('set-css').value = config.css;
-        document.getElementById('set-prompt').value = config.prompt;
         document.getElementById('set-font-size').value = config.fontSize;
         
         updateFontSizeLabel();
@@ -937,7 +934,27 @@
     window.onload = () => { try { init(); } catch (e) { console.error("Init Error", e); } };
 
     // ------------------------- 推送测试 -------------------------
-    function showTestNotification() { showCuteAlert('推送测试触发（需要在真实HTTPS环境下获取权限）'); }
+    function showTestNotification() { 
+        if (!("Notification" in window)) {
+            showCuteAlert("当前浏览器不支持后台推送功能哦~");
+            return;
+        }
+        if (Notification.permission === "granted") {
+            new Notification("肉肉机", { body: "测试成功！后台推送功能正常运行中~" });
+            showCuteAlert("已发送测试推送，请查看通知栏！");
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("肉肉机", { body: "测试成功！后台推送功能正常运行中~" });
+                    showCuteAlert("已获取权限并发送测试推送！");
+                } else {
+                    showCuteAlert("权限被拒绝，无法发送推送通知。");
+                }
+            });
+        } else {
+            showCuteAlert("通知权限已被永久拒绝，请在浏览器设置中开启。");
+        }
+    }
 
     // ------------------------- 多角色与通讯录逻辑 -------------------------
     function saveContactsToLocal() { try { localStorage.setItem('contacts', JSON.stringify(contacts)); } catch(e){} }
@@ -979,7 +996,7 @@
             id: newId, realName, remark, gender,
             avatar: tempNewContactAvatar, userAvatar: config.userAvatar || currentContact.userAvatar, 
             aiPersona: persona, userPersona: userPersona,
-            chatCss: defaultChatCss, chatBg: '', showReadReceipt: false, showTimestamps: true, minReplies: '1', maxReplies: '3'
+            chatCss: defaultChatCss, chatBg: '', profileBg: '', showReadReceipt: false, showTimestamps: true, minReplies: '1', maxReplies: '3'
         };
 
         contacts.push(newContact);
@@ -1004,7 +1021,7 @@
         currentContact = contacts.find(c => c.id === id);
         try { localStorage.setItem('currentContactId', id); } catch(e){}
         
-        if(!allChatHistories[id]) allChatHistories[id] = [];
+        if(!allChatHistories[id]) allChatHistories[id] =[];
         if(!allInnerVoices[id]) allInnerVoices[id] = [];
         chatHistory = allChatHistories[id];
         innerVoiceHistory = allInnerVoices[id];
@@ -1013,13 +1030,57 @@
         openChatWindow();
     }
 
+    function openContactProfile(id) {
+        activeProfileId = id;
+        let c = contacts.find(x => x.id === id);
+        if(!c) return;
+        document.getElementById('profile-name-display').innerText = c.remark;
+        const avatarImg = document.getElementById('profile-avatar-img');
+        const fallback = document.getElementById('profile-avatar-fallback');
+        if (c.avatar) {
+            avatarImg.src = c.avatar; avatarImg.style.display = 'block'; fallback.style.display = 'none';
+        } else {
+            avatarImg.style.display = 'none'; fallback.innerText = c.remark.charAt(0); fallback.style.display = 'flex';
+        }
+        
+        const bgDisplay = document.getElementById('profile-bg-display');
+        if (c.profileBg) {
+            bgDisplay.style.backgroundImage = `url('${c.profileBg}')`;
+        } else {
+            bgDisplay.style.backgroundImage = `url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop')`;
+        }
+
+        document.getElementById('profile-action-msg').onclick = () => { closeProfile(); switchContact(id); };
+        document.getElementById('profile-page').classList.add('active');
+    }
+
+    function handleProfileBgUpload(event) {
+        const file = event.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image(); img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height; const MAX = 1200;
+                if (w > h && w > MAX) { h *= MAX/w; w = MAX; } else if (h > MAX) { w *= MAX/h; h = MAX; }
+                canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                let c = contacts.find(x => x.id === activeProfileId);
+                if (c) {
+                    c.profileBg = dataUrl;
+                    saveContactsToLocal();
+                    document.getElementById('profile-bg-display').style.backgroundImage = `url('${dataUrl}')`;
+                }
+            }; img.src = e.target.result;
+        }; reader.readAsDataURL(file);
+    }
+
     function renderContactsList() {
         const container = document.getElementById('contacts-list-container');
         container.innerHTML = '';
         contacts.forEach(c => {
             const avatarHtml = c.avatar ? `<img src="${c.avatar}" style="display:block;">` : `<div style="font-size:1.2em;">${c.remark.charAt(0)}</div>`;
             container.innerHTML += `
-                <div class="list-item" onclick="switchContact('${c.id}')">
+                <div class="list-item" onclick="openContactProfile('${c.id}')">
                     <div class="avatar circular">${avatarHtml}</div>
                     <div class="item-info"><div class="item-name">${c.remark}</div></div>
                 </div>`;
@@ -1032,13 +1093,13 @@
         
         // 按最后聊天时间排序 (简单处理)
         let chatSorted = [...contacts].sort((a, b) => {
-            let histA = allChatHistories[a.id] || []; let histB = allChatHistories[b.id] || [];
+            let histA = allChatHistories[a.id] || []; let histB = allChatHistories[b.id] ||[];
             if(histA.length === 0) return 1; if(histB.length === 0) return -1;
             return 0; // 简单排，未做严格时间戳对比
         });
 
         chatSorted.forEach(c => {
-            let hist = allChatHistories[c.id] || [];
+            let hist = allChatHistories[c.id] ||[];
             if(hist.length === 0 && contacts.length > 1) return; // 空聊天如果不唯一，不在首页展示
             
             let lastMsg = hist.length > 0 ? hist[hist.length-1] : null;
@@ -1127,7 +1188,7 @@
         
         // Save local worldbook selections
         const cbList = document.querySelectorAll('.wb-local-cb');
-        let selected = [];
+        let selected =[];
         cbList.forEach(cb => { if(cb.checked) selected.push(cb.value); });
         contactWorldbooks[currentContactId] = selected;
         try { localStorage.setItem('contactWorldbooks', JSON.stringify(contactWorldbooks)); } catch(e){}
@@ -1191,7 +1252,6 @@
         if(wb) {
             document.getElementById('wb-edit-id').value = wb.id;
             document.getElementById('wb-edit-title').value = wb.title;
-            document.getElementById('wb-edit-keys').value = wb.keys;
             document.getElementById('wb-edit-content').value = wb.content;
             document.getElementById('wb-edit-scope').value = wb.scope;
             document.getElementById('wb-edit-position').value = wb.position;
@@ -1199,7 +1259,6 @@
         } else {
             document.getElementById('wb-edit-id').value = '';
             document.getElementById('wb-edit-title').value = '';
-            document.getElementById('wb-edit-keys').value = '';
             document.getElementById('wb-edit-content').value = '';
             document.getElementById('wb-edit-scope').value = 'global';
             document.getElementById('wb-edit-position').value = 'front';
@@ -1211,7 +1270,6 @@
     function saveWorldbook() {
         let id = document.getElementById('wb-edit-id').value;
         let title = document.getElementById('wb-edit-title').value.trim();
-        let keys = document.getElementById('wb-edit-keys').value.trim();
         let content = document.getElementById('wb-edit-content').value.trim();
         let scope = document.getElementById('wb-edit-scope').value;
         let position = document.getElementById('wb-edit-position').value;
@@ -1220,9 +1278,9 @@
 
         if(id) {
             let wb = worldbooks.find(w => w.id === id);
-            if(wb) { wb.title=title; wb.keys=keys; wb.content=content; wb.scope=scope; wb.position=position; }
+            if(wb) { wb.title=title; wb.content=content; wb.scope=scope; wb.position=position; }
         } else {
-            worldbooks.push({ id: 'wb_'+Date.now(), title, keys, content, scope, position });
+            worldbooks.push({ id: 'wb_'+Date.now(), title, content, scope, position });
         }
         
         saveWorldbooksToLocal();
@@ -1249,7 +1307,7 @@
             container.innerHTML = '<div style="font-size:0.85em; color:#999;">无可用的局部世界书</div>';
             return;
         }
-        let activeForContact = contactWorldbooks[currentContactId] || [];
+        let activeForContact = contactWorldbooks[currentContactId] ||[];
         locals.forEach(wb => {
             let checked = activeForContact.includes(wb.id) ? 'checked' : '';
             container.innerHTML += `
@@ -1351,6 +1409,26 @@
             }; img.src = e.target.result;
         }; reader.readAsDataURL(file);
     }
+    
+    function handleMeBgUpload(event) {
+        const file = event.target.files[0]; if (!file) return; 
+        const reader = new FileReader(); reader.onload = function(e) { 
+            const img = new Image(); img.onload = function() { 
+                const canvas = document.createElement('canvas'); 
+                let w = img.width, h = img.height; const MAX = 1200; 
+                if (w > h && w > MAX) { h *= MAX/w; w = MAX; } else if (h > MAX) { w *= MAX/h; h = MAX; } 
+                canvas.width = w; canvas.height = h; 
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h); 
+                config.meBg = canvas.toDataURL('image/jpeg', 0.8); 
+                try { localStorage.setItem('meBg', config.meBg); } catch(e){}
+                document.getElementById('me-bg-preview').style.backgroundImage = `url('${config.meBg}')`;
+                const hint = document.querySelector('.me-bg-hint'); if(hint) hint.style.display = 'none';
+            }; img.src = e.target.result; 
+        }; reader.readAsDataURL(file); 
+    }
+    
+    function saveMeSignature(val) { config.meSignature = val; try { localStorage.setItem('meSignature', val); } catch(e){} }
+
     function removeChatBg() { currentContact.chatBg = ''; saveContactsToLocal(); updateChatBgUI(); applyChatBg(); }
     function updateChatBgUI() {
         if(currentContact.chatBg) { document.getElementById('preview-chat-bg').src = currentContact.chatBg; document.getElementById('preview-chat-bg').style.display = 'block'; document.getElementById('remove-chat-bg-btn').style.display = 'block'; } 
@@ -1545,12 +1623,11 @@
         config.temperature = document.getElementById('set-temperature').value; 
         config.fontSize = document.getElementById('set-font-size').value; 
         config.css = document.getElementById('set-css').value; 
-        config.prompt = document.getElementById('set-prompt').value; 
         
         try {
             localStorage.setItem('baseUrl', config.baseUrl); localStorage.setItem('apiKey', config.apiKey); localStorage.setItem('model', config.model); 
             localStorage.setItem('temperature', config.temperature); localStorage.setItem('fontSize', config.fontSize); localStorage.setItem('customFont', config.customFont); 
-            localStorage.setItem('css', config.css); localStorage.setItem('wallpaper', config.wallpaper); localStorage.setItem('prompt', config.prompt); 
+            localStorage.setItem('css', config.css); localStorage.setItem('wallpaper', config.wallpaper); 
         } catch(e){}
         
         document.documentElement.style.setProperty('--global-font-size', config.fontSize + 'px'); applyCustomCss(); applyImages(); closeModal(); showCuteAlert('全局配置已保存'); 
@@ -1592,11 +1669,12 @@
 穿着：(纯文本描述)
 动作：(纯文本描述)
 内心想法：(纯文本描述)
+换头像：(如果不换请填“无”，如果决定把自己的头像换成对方刚刚发来的图片，请填“换”)
 回复：(你要发出的微信消息，分条请用[BREAK]分隔)`;
 
         // 🌟 世界书注入逻辑 🌟
         let wbFront = "", wbMid = "", wbBack = "";
-        let activeWbIds = contactWorldbooks[currentContactId] || [];
+        let activeWbIds = contactWorldbooks[currentContactId] ||[];
         worldbooks.forEach(wb => {
             if(wb.scope === 'global' || activeWbIds.includes(wb.id)) {
                 let text = `\n【世界书设定：${wb.title}】\n${wb.content}\n`;
@@ -1607,7 +1685,7 @@
         });
 
         // 拼接最前面的系统提示词 (包含前置世界书)
-        let finalSystemPrompt = wbFront + personaPrefix + config.prompt.replace('{REPLY_COUNT_INSTRUCTION}', replyCountInstruction).replace('{TIME}', nowStr) + ivInstruction;
+        let finalSystemPrompt = wbFront + personaPrefix + SYSTEM_PROMPT.replace('{REPLY_COUNT_INSTRUCTION}', replyCountInstruction).replace('{TIME}', nowStr) + ivInstruction;
         
         const recentHistory = chatHistory.slice(-15).map(msg => {
             let contentHtml = msg.content ? msg.content : "";
@@ -1635,13 +1713,38 @@
             const data = await response.json(); const replyText = data.choices[0].message.content;
 
             let clothing = "暂无数据", action = "暂无数据", thoughts = "暂无数据", finalReply = replyText;
-            const regex = /穿着[:：]\s*([\s\S]*?)\s*动作[:：]\s*([\s\S]*?)\s*内心想法[:：]\s*([\s\S]*?)\s*回复[:：]\s*([\s\S]*)$/;
-            const match = replyText.match(regex);
+            
+            let regex = /穿着[:：]\s*([\s\S]*?)\s*动作[:：]\s*([\s\S]*?)\s*内心想法[:：]\s*([\s\S]*?)\s*换头像[:：]\s*([\s\S]*?)\s*回复[:：]\s*([\s\S]*)$/;
+            let match = replyText.match(regex);
+
+            if (!match) {
+                const fallbackRegex = /穿着[:：]\s*([\s\S]*?)\s*动作[:：]\s*([\s\S]*?)\s*内心想法[:：]\s*([\s\S]*?)\s*回复[:：]\s*([\s\S]*)$/;
+                match = replyText.match(fallbackRegex);
+                if (match) match.splice(4, 0, "无");
+            }
 
             if (match) {
                 clothing = match[1].trim().replace(/^\[|\]$/g, ''); action = match[2].trim().replace(/^\[|\]$/g, ''); 
-                thoughts = match[3].trim().replace(/^\[|\]$/g, ''); finalReply = match[4].trim();
+                thoughts = match[3].trim().replace(/^\[|\]$/g, ''); 
+                let changeAvatarFlag = match[4].trim();
+                finalReply = match[5].trim();
                 
+                if (changeAvatarFlag.includes('换') && !changeAvatarFlag.includes('无')) {
+                    let lastUserImage = null;
+                    for (let i = chatHistory.length - 1; i >= 0; i--) {
+                        if (chatHistory[i].role === 'user' && chatHistory[i].content.includes('<img')) {
+                            const imgMatch = chatHistory[i].content.match(/src="(data:image\/[^"]+)"/);
+                            if (imgMatch) { lastUserImage = imgMatch[1]; break; }
+                        }
+                    }
+                    if (lastUserImage) {
+                        currentContact.avatar = lastUserImage;
+                        saveContactsToLocal();
+                        loadContactData(); // Auto updates all UI avatars dynamically
+                        showCuteAlert(`对方已将头像更换为你发送的最新图片！`);
+                    }
+                }
+
                 const timeKey = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
                 innerVoiceHistory.push({ timestamp: timeKey, clothing, action, thoughts, reply: finalReply.replace(/\[BREAK\]/g, ' ') });
                 saveAllHistoriesToLocal();
